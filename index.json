@@ -1,6 +1,21 @@
 {
   "sessions": [
     {
+      "session_id": "3f2ea033-36fd-4b1a-8617-1c9d39eb5bf1",
+      "slug": "klarheit-vor-gewissheit",
+      "title": "Klarheit vor Gewissheit",
+      "topics": [
+        "Klarheit",
+        "Onboarding",
+        "Unsicherheit"
+      ],
+      "source_video": "https://www.youtube.com/watch?v=RB2J640Xrvw",
+      "related_session_ids": [
+        "c09f6c36-794d-4236-86df-898c4839807b"
+      ],
+      "related_youtube_urls": []
+    },
+    {
       "session_id": "7584588a-386b-4fec-86b8-159130599173",
       "slug": "selbstbewusste-demut",
       "title": "Selbstbewusste Demut",
