@@ -27,6 +27,21 @@
       "source_video": "https://www.youtube.com/watch?v=RB2J640Xrvw",
       "related_session_ids": [],
       "related_youtube_urls": []
+    },
+    {
+      "session_id": "c09f6c36-794d-4236-86df-898c4839807b",
+      "slug": "vom-pairing-zum-team-agreement",
+      "title": "Vom Pairing zum Team-Agreement",
+      "topics": [
+        "Pairing",
+        "Psychologische Sicherheit",
+        "Team-Agreement"
+      ],
+      "source_video": "https://www.youtube.com/watch?v=RB2J640Xrvw",
+      "related_session_ids": [
+        "7584588a-386b-4fec-86b8-159130599173"
+      ],
+      "related_youtube_urls": []
     }
   ]
 }
