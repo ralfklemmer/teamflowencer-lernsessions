@@ -31,6 +31,24 @@
       "related_youtube_urls": []
     },
     {
+      "session_id": "7d23b561-cb71-4bd8-875f-2b445a99431a",
+      "slug": "der-erste-tag-auf-einer-seite",
+      "title": "Der erste Tag auf einer Seite",
+      "topics": [
+        "Erster Arbeitstag",
+        "Praxisplan",
+        "Tech Lead"
+      ],
+      "source_video": "https://www.youtube.com/watch?v=RB2J640Xrvw",
+      "related_session_ids": [
+        "3f2ea033-36fd-4b1a-8617-1c9d39eb5bf1",
+        "7584588a-386b-4fec-86b8-159130599173",
+        "b10b25f5-c791-4c89-82c1-11c4a9dfd383",
+        "c09f6c36-794d-4236-86df-898c4839807b"
+      ],
+      "related_youtube_urls": []
+    },
+    {
       "session_id": "b10b25f5-c791-4c89-82c1-11c4a9dfd383",
       "slug": "warum-der-start-alles-entscheidet",
       "title": "Warum der Start alles entscheidet",
