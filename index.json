@@ -1,6 +1,21 @@
 {
   "sessions": [
     {
+      "session_id": "7584588a-386b-4fec-86b8-159130599173",
+      "slug": "selbstbewusste-demut",
+      "title": "Selbstbewusste Demut",
+      "topics": [
+        "Führung",
+        "Kommunikation",
+        "Selbstbewusste Demut"
+      ],
+      "source_video": "https://www.youtube.com/watch?v=RB2J640Xrvw",
+      "related_session_ids": [
+        "b10b25f5-c791-4c89-82c1-11c4a9dfd383"
+      ],
+      "related_youtube_urls": []
+    },
+    {
       "session_id": "b10b25f5-c791-4c89-82c1-11c4a9dfd383",
       "slug": "warum-der-start-alles-entscheidet",
       "title": "Warum der Start alles entscheidet",
