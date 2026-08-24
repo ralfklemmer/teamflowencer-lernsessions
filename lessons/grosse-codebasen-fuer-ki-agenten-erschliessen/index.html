@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Große Codebasen für KI-Agenten erschließen</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/course.css">
+  <style>
+    .module{display:grid;grid-template-columns:3rem 1fr;gap:1rem;padding:1.15rem 0;border-bottom:1px solid var(--rule)}
+    .module-n{font:600 1.5rem var(--sans);color:var(--accent)}
+    .module h2{margin:0 0 .25rem;font-size:1.15rem}.module p{margin:0;color:var(--ink-soft)}
+    .module a{text-decoration:none}.module a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+<main class="lesson" data-lesson-id="index" data-workspace-root="./">
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Praxis-Tutorial · Repo Map und Serena in Pi</p>
+    <h1 class="lesson-title">Große Codebasen für KI-Agenten erschließen</h1>
+    <p class="lesson-sub">Ein kontrollierter Kontextzugriff, damit dein Agent auch in großen Repositories gezielt helfen kann.</p>
+    <div class="lesson-meta"><span>4 Kapitel</span><span>ca. 45–60 Minuten</span><span>read-only Einstieg</span></div>
+  </header>
+
+  <div class="callout learning-objective">
+    <p class="callout-title">Das erreichst du</p>
+    <p>Du baust ein Setup, mit dem ein KI-Agent zuerst die relevanten Bereiche einer Codebase findet und danach nur die benötigten Details abruft – ohne das gesamte Repository in das Context Window zu laden. Anschließend kannst du anhand sichtbarer Tool-Ergebnisse prüfen, ob dieser Zugriff wirklich funktioniert.</p>
+  </div>
+
+  <h2>Warum dieser Ansatz?</h2>
+  <p>Ein großes Context Window allein sagt einem Agenten noch nicht, welcher Teil einer Codebase für deine Aufgabe wichtig ist. Eine vollständige Übergabe des Repositories erzeugt viel Kontext, aber noch keine gute Suchstrategie.</p>
+  <p>Deshalb wird der Kontext schrittweise aufgebaut:</p>
+  <div class="diagram">deine fachliche Aufgabe
+      ↓
+Repo Map liefert den begrenzten Überblick
+      ↓
+Serena nutzt den Language Server für gezielte Code-Beziehungen
+      ↓
+nur die jetzt benötigten Details gelangen zum Agenten
+      ↓
+Tool-Ergebnisse machen den Zugriff überprüfbar</div>
+  <p>Die Übersicht zeigt dir zunächst nur diese Nutzenkette. Im ersten Kapitel lernst du, warum Repo Map und Serena unterschiedliche Aufgaben übernehmen und weshalb der Language Server je nach Programmiersprache eine zentrale Rolle spielt.</p>
+
+  <h2>Die vier Kapitel</h2>
+  <section aria-label="Tutorial-Kapitel">
+    <div class="module"><div class="module-n">01</div><div><h2><a href="lessons/0001-kontext-ist-eine-pipeline.html">Warum Repo Map und Serena zusammengehören</a></h2><p>Das Problem großer Codebasen und die beiden Schlüsselkonzepte ohne Vorwissen verstehen.</p></div></div>
+    <div class="module"><div class="module-n">02</div><div><h2><a href="lessons/0002-repo-map.html">Repo Map in Pi einrichten</a></h2><p>Pi, Aider und die Repo-Map-Extension installieren und erstmals ausführen.</p></div></div>
+    <div class="module"><div class="module-n">03</div><div><h2><a href="lessons/0003-serena-und-lsp.html">Serena in Pi einrichten</a></h2><p>Projekt indexieren, Serena anbinden und semantische Navigation aktivieren.</p></div></div>
+    <div class="module"><div class="module-n">04</div><div><h2><a href="lessons/0004-pi-und-mcp.html">So beweist du, dass es funktioniert</a></h2><p>Beobachtbare Effekte, End-to-End-Gates und Skalierungscheck.</p></div></div>
+  </section>
+
+  <h2>Setup von null bis funktionsfähig</h2>
+  <p>Die Kapitel enthalten alle Befehle, Konfigurationen, erwarteten Ergebnisse und Prüfschritte. Du musst keine weitere Datei dieses Projekts öffnen. Arbeite in der Reihenfolge 01 → 04 und beginne auf einem sauberen Git-Stand.</p>
+
+  <div class="callout warning">
+    <p class="callout-title">Wichtige Grenze</p>
+    <p>Eine gute Repo Map und korrekte Serena-Treffer beweisen, dass die Kontext-Pipeline funktioniert. Sie beweisen noch nicht, dass eine spätere Codeänderung fachlich richtig ist.</p>
+  </div>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine relevante Stelle und notiere deine Frage, deinen Einwand oder deinen Praxisfall als Kommentar.</li><li>Öffne deinen eigenen KI-Agenten und gib ihm diese Seite als Kontext: Lass ihn die HTML-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer">
+    <div class="next"><strong>Start:</strong> <a href="lessons/0001-kontext-ist-eine-pipeline.html">Das mentale Modell verstehen →</a></div>
+  </footer>
+</main>
+<script src="assets/course.js"></script>
+<script src="assets/annotations.js"></script>
+</body>
+</html>

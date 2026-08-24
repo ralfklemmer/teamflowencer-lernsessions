@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>02 · Repo Map in Pi einrichten</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="0002-repo-map-setup" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a href="0001-kontext-ist-eine-pipeline.html">01 Verstehen</a><a aria-current="page" href="0002-repo-map.html">02 Repo Map</a><a href="0003-serena-und-lsp.html">03 Serena</a><a href="0004-pi-und-mcp.html">04 Prüfen</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Kapitel 02 · Installation</p>
+    <h1 class="lesson-title">Repo Map in Pi einrichten</h1>
+    <p class="lesson-sub">Aider erzeugt die Karte. Eine kleine Pi-Extension macht sie als <code>repo_map</code>-Werkzeug verfügbar.</p>
+    <div class="lesson-meta"><span>15 Minuten</span><span>macOS/Linux</span><span>Git-Repository</span></div>
+  </header>
+
+  <div class="callout learning-objective"><p class="callout-title">Dein Ergebnis</p><p>Pi kann in einem beliebigen Git-Repository einen echten <code>repo_map</code>-Aufruf ausführen und erhält konkrete Pfade und Symbole.</p></div>
+
+  <h2>0 · Voraussetzungen prüfen</h2>
+  <pre><code>command -v git node npm uv
+
+git --version
+node --version
+uv --version</code></pre>
+  <p>Jeder <code>command -v</code>-Aufruf muss einen Pfad liefern. Fehlt <code>uv</code> auf macOS, kannst du es mit <code>brew install uv</code> installieren. Fehlen Node und npm, installiere ein aktuelles Node.js-Paket über deinen Paketmanager.</p>
+
+  <h2>1 · Pi installieren</h2>
+  <pre><code>npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+command -v pi
+pi --version</code></pre>
+
+  <h2>2 · Aider installieren</h2>
+  <p>Diese Version wurde für das Tutorial geprüft:</p>
+  <pre><code>uv python install 3.12
+uv tool install --force --python python3.12 --with pip 'aider-chat==0.86.2'
+
+command -v aider
+aider --version
+aider --help | grep -- '--show-repo-map'</code></pre>
+  <p>Erwartung: Aider meldet Version <code>0.86.2</code>, und die Hilfe enthält <code>--show-repo-map</code>.</p>
+
+  <h2>3 · Die Repo-Map-Extension installieren</h2>
+  <p><a href="../downloads/pi-repo-map-extension.zip" download>Repo-Map-Extension herunterladen</a>, entpacken und das Verzeichnis an einen dauerhaften Ort legen. Pi referenziert diesen Ordner; verschiebe ihn nach der Installation nicht.</p>
+  <pre><code>cd /pfad/zum/pi-repo-map-extension
+chmod +x install.sh
+./install.sh</code></pre>
+  <p>Der Installer prüft <code>pi</code>, <code>git</code> und <code>aider</code> und registriert anschließend das lokale Paket in Pi.</p>
+
+  <h2>4 · Ein Repository vorbereiten</h2>
+  <pre><code>cd /pfad/zu/deinem/git-repository
+git rev-parse --show-toplevel
+git status --short
+
+grep -qxF '.aider.tags.cache.v4/' .git/info/exclude || \
+  printf '%s\n' '.aider.tags.cache.v4/' &gt;&gt; .git/info/exclude</code></pre>
+  <p>Beginne möglichst mit leerer Ausgabe von <code>git status --short</code>. Der lokale Ausschluss verhindert, dass Aiders Indexcache deinen Working Tree verschmutzt.</p>
+
+  <h2>5 · Den ersten echten Aufruf ausführen</h2>
+  <pre><code>pi</code></pre>
+  <p>Gib Pi danach diesen Auftrag:</p>
+  <pre><code>Erzeuge mit repo_map eine globale Übersicht dieses Repositories mit
+2048 Map-Tokens. Verändere keine Dateien. Nenne drei sichtbare
+Einstiegssymbole und eine Detailfrage, die die Map nicht beantworten kann.</code></pre>
+
+  <h2>Erwartete Beobachtungen</h2>
+  <ul class="checklist"><li><label><input type="checkbox">Im Transkript erscheint ein echter <code>repo_map</code>-Tool-Call.</label></li><li><label><input type="checkbox">Das Ergebnis enthält relative Dateipfade und Symbolsignaturen.</label></li><li><label><input type="checkbox">Die Map bleibt durch <code>2048</code> Tokens begrenzt.</label></li><li><label><input type="checkbox"><code>.aider.tags.cache.v4/</code> wurde lokal angelegt.</label></li><li><label><input type="checkbox">Getrackte Projektdateien blieben unverändert.</label></li></ul>
+
+  <div class="callout warning"><p class="callout-title">Wenn nur eine Zusammenfassung erscheint</p><p>Prüfe, ob im Pi-Transkript wirklich der Tool-Call sichtbar ist. Eine vom Modell formulierte Beschreibung ohne Tool-Ergebnis beweist nicht, dass die Extension funktioniert.</p></div>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine relevante Stelle und notiere deine Frage, deinen Einwand oder deinen Praxisfall als Kommentar.</li><li>Öffne deinen eigenen KI-Agenten und gib ihm diese Seite als Kontext: Lass ihn die Lesson-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><button class="lesson-complete" type="button"></button><div class="next"><strong>Nächster Schritt:</strong> <a href="0003-serena-und-lsp.html">Serena in Pi einrichten →</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>

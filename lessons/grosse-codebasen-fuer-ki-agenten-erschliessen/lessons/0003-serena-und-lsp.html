@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>03 · Serena in Pi einrichten</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="0003-serena-setup" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a href="0001-kontext-ist-eine-pipeline.html">01 Verstehen</a><a href="0002-repo-map.html">02 Repo Map</a><a aria-current="page" href="0003-serena-und-lsp.html">03 Serena</a><a href="0004-pi-und-mcp.html">04 Prüfen</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Kapitel 03 · Installation</p>
+    <h1 class="lesson-title">Serena in Pi einrichten</h1>
+    <p class="lesson-sub">Projekt indexieren, Serena über MCP anbinden und den ersten semantischen Treffer erzeugen.</p>
+    <div class="lesson-meta"><span>20 Minuten</span><span>Language Server</span><span>read-only Tools</span></div>
+  </header>
+
+  <div class="callout learning-objective"><p class="callout-title">Dein Ergebnis</p><p>Pi kann Serena starten, ein Symbol aus dem lokalen Projekt finden und dessen relativen Pfad als Tool-Ergebnis zurückgeben.</p></div>
+
+  <h2>1 · Laufzeit und Serena installieren</h2>
+  <p>Für Java muss zusätzlich <code>java -version</code> funktionieren. Für andere Sprachen benötigt Serena den jeweils unterstützten Language Server.</p>
+  <pre><code>command -v uv git java
+
+uv tool install -p 3.13 'serena-agent==1.7.0'
+command -v serena
+serena --version
+serena init</code></pre>
+  <p>Erwartung: <code>serena --version</code> meldet <code>1.7.0</code>.</p>
+
+  <h2>2 · Dein Projekt indexieren</h2>
+  <p>Wechsle in das Git-Root. Ersetze <code>java</code>, wenn du eine andere von Serena unterstützte Sprache verwendest.</p>
+  <pre><code>cd /pfad/zu/deinem/git-repository
+git rev-parse --show-toplevel
+
+serena project create --language java .
+serena project index .
+serena project health-check .</code></pre>
+  <p>Erwartung: Der Health-Check endet ohne Werkzeugfehler. Serena erzeugt dafür das lokale Verzeichnis <code>.serena/</code>.</p>
+  <pre><code>for pattern in '.serena/' '.mcp.json'; do
+  grep -qxF "$pattern" .git/info/exclude || \
+    printf '%s\n' "$pattern" &gt;&gt; .git/info/exclude
+done
+
+git status --short</code></pre>
+
+  <h2>3 · Den MCP-Adapter für Pi installieren</h2>
+  <pre><code>pi install npm:pi-mcp-adapter@2.27.0
+pi list</code></pre>
+  <p>Erwartung: <code>pi-mcp-adapter@2.27.0</code> erscheint in der Paketliste.</p>
+
+  <h2>4 · Projektkonfiguration erzeugen</h2>
+  <p>Der folgende Befehl liest den echten Serena-Pfad und das echte Git-Root direkt vom Rechner und schreibt daraus <code>.mcp.json</code>. So musst du keinen langen Pfad von Hand übertragen.</p>
+  <pre><code>SERENA_BIN="$(command -v serena)"
+PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+
+python3 - "$SERENA_BIN" "$PROJECT_ROOT" &lt;&lt;'PY'
+import json
+import sys
+from pathlib import Path
+
+serena_bin, project_root = sys.argv[1:]
+config = {
+    "settings": {
+        "toolPrefix": "server",
+        "scriptMode": False,
+        "hostConfigDiscovery": "off",
+        "sampling": False,
+        "elicitation": False,
+        "outputGuard": True,
+    },
+    "mcpServers": {
+        "serena": {
+            "command": serena_bin,
+            "args": [
+                "start-mcp-server",
+                "--context", "ide",
+                "--project-from-cwd",
+                "--open-web-dashboard", "false",
+            ],
+            "cwd": project_root,
+            "lifecycle": "lazy",
+            "directTools": [
+                "initial_instructions",
+                "get_symbols_overview",
+                "find_symbol",
+                "find_referencing_symbols",
+                "find_implementations",
+                "get_diagnostics_for_file",
+                "search_for_pattern",
+            ],
+            "debug": False,
+        }
+    },
+}
+Path(".mcp.json").write_text(json.dumps(config, indent=2) + "\n")
+PY</code></pre>
+  <p><code>lazy</code> bedeutet: Serena startet erst beim ersten Serena-Aufruf. Die kleine Tool-Auswahl hält mutierende Werkzeuge zunächst aus dem direkten Arbeitsbereich heraus.</p>
+
+  <h2>5 · Serena erstmals aus Pi aufrufen</h2>
+  <pre><code>pi</code></pre>
+  <p>Prüfe in Pi zuerst <code>/mcp</code>. Vor dem ersten Aufruf darf Serena wegen <code>lazy</code> noch nicht verbunden sein. Wähle dann einen Klassennamen, den du in deinem Projekt sicher kennst, und ersetze <code>BEKANNTES_SYMBOL</code>:</p>
+  <pre><code>Verwende ausschließlich Serena und verändere keine Dateien.
+Rufe zuerst initial_instructions auf. Finde danach BEKANNTES_SYMBOL
+und nenne relativen Dateipfad sowie Symbolart. Belege die Antwort
+nur mit den sichtbaren Serena-Tool-Ergebnissen.</code></pre>
+
+  <div class="callout success"><p class="callout-title">Reproduzierbares Video-Beispiel</p><p>Beim gezeigten PetClinic-Stand lautet das bekannte Symbol <code>OwnerController</code>. Der erwartete Treffer ist <code>src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java</code> mit Symbolart <code>Class</code>.</p></div>
+
+  <h2>Erwartete Beobachtungen</h2>
+  <ul class="checklist"><li><label><input type="checkbox">Der erste Serena-Aufruf startet den Server.</label></li><li><label><input type="checkbox">Pi zeigt echte Serena-Tool-Calls.</label></li><li><label><input type="checkbox">Der Treffer enthält den korrekten relativen Dateipfad.</label></li><li><label><input type="checkbox">Die Symbolart passt zur bekannten Definition.</label></li><li><label><input type="checkbox">Keine Projektdatei wurde verändert.</label></li></ul>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine relevante Stelle und notiere deine Frage, deinen Einwand oder deinen Praxisfall als Kommentar.</li><li>Öffne deinen eigenen KI-Agenten und gib ihm diese Seite als Kontext: Lass ihn die Lesson-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><button class="lesson-complete" type="button"></button><div class="next"><strong>Nächster Schritt:</strong> <a href="0004-pi-und-mcp.html">Setup und Skalierung belastbar prüfen →</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>

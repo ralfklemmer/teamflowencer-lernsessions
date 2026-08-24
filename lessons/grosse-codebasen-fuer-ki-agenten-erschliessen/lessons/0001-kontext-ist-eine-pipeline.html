@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>01 · Große Codebasen für KI-Agenten erschließen</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="0001-grundlagen" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a aria-current="page" href="0001-kontext-ist-eine-pipeline.html">01 Verstehen</a><a href="0002-repo-map.html">02 Repo Map</a><a href="0003-serena-und-lsp.html">03 Serena</a><a href="0004-pi-und-mcp.html">04 Prüfen</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Kapitel 01 · Das Problem und die Lösung</p>
+    <h1 class="lesson-title">Große Codebasen für KI-Agenten erschließbar machen</h1>
+    <p class="lesson-sub">Wie dein Agent in einem großen Repository wirksam helfen kann, ohne dass das Context Window zum Flaschenhals wird.</p>
+    <div class="lesson-meta"><span>10 Minuten</span><span>kein Vorwissen nötig</span></div>
+  </header>
+
+  <div class="callout learning-objective"><p class="callout-title">Was sich für dich löst</p><p>Nach diesem Tutorial kannst du einem KI-Agenten eine Aufgabe in einer großen oder unbekannten Codebase geben. Der Agent erhält zuerst einen begrenzten Überblick und ruft danach gezielt die benötigten Code-Details ab – ohne das gesamte Repository in das Context Window zu laden. Du kannst außerdem prüfen, ob dieser Zugriff wirklich funktioniert.</p></div>
+
+  <h2>Warum ein großes Repository für einen KI-Agenten schwierig ist</h2>
+  <p>Ein KI-Agent kann eine Codebase nicht auf dieselbe Weise dauerhaft überblicken wie deine IDE. Das Modell arbeitet immer mit einer begrenzten Auswahl an Informationen in seinem aktuellen Context Window.</p>
+  <p>Bei einem großen Repository entstehen deshalb zwei Probleme: Ohne Übersicht weiß der Agent nicht zuverlässig, wo er beginnen soll. Lädt er vorsorglich immer mehr Dateien, konkurrieren relevante Klassen mit einer wachsenden Menge irrelevanter Details.</p>
+  <p>Das Ziel ist also nicht, möglichst viel Code in den Kontext zu drücken. Das Ziel ist ein kontrollierter Zugriff:</p>
+  <div class="diagram">deine fachliche Aufgabe
+      ↓
+Repo Map grenzt den globalen Suchraum ein
+      ↓
+Serena + Language Server prüfen konkrete Code-Beziehungen
+      ↓
+nur die jetzt benötigten Details gelangen zum Agenten
+      ↓
+der nächste Schritt wird präziser</div>
+
+  <h2>Die zwei Schlüsselkonzepte</h2>
+
+  <h3>1 · Repo Map: der begrenzte Überblick</h3>
+  <p>Eine Repo Map ist eine <strong>kompakte, priorisierte Übersicht wichtiger Dateien und Code-Symbole</strong>. Symbole sind benannte Bausteine wie Klassen, Methoden oder Felder.</p>
+  <p>In diesem Tutorial erzeugt Aider diese Übersicht aus den Strukturen und Verweisen im Repository. Die Ausgabe hat ein festes Budget. Dadurch bleibt der globale Überblick klein, auch wenn die Codebase deutlich größer wird.</p>
+  <p>Die Repo Map beantwortet: <strong>„Welche Bereiche und Symbole sind plausible Einstiegspunkte für meine Untersuchung?“</strong> Sie ist bewusst unvollständig. Ihre Aufgabe ist Vorauswahl, nicht Detailwissen.</p>
+
+  <h3>2 · Serena + Language Server: gezielte Details</h3>
+  <p>Sobald ein interessanter Bereich bekannt ist, braucht der Agent präzise Code-Navigation. Serena stellt ihm dafür Funktionen bereit, die du aus einer IDE kennst: Definitionen finden, Verwendungsstellen auflösen, Implementierungen suchen und die Struktur einer Datei anzeigen.</p>
+  <p>Die eigentliche Code-Intelligence liefert dabei ein <strong>Language Server</strong>. Welcher Server arbeitet, hängt je nach Programmiersprache vom Projekt ab. Für Java verwendet unser Beispiel JDTLS; andere Sprachen benötigen ihre passende Language-Server-Implementierung.</p>
+  <p>Der Language Server kennt das Projektmodell und kann gleich benannte Methoden, Typen und echte Symbolbeziehungen auseinanderhalten. Serena macht diese Fähigkeiten als gezielte Werkzeuge für Pi zugänglich. Serena ist selbst kein Sprachmodell.</p>
+
+  <h2>Warum braucht man beides?</h2>
+  <table><thead><tr><th>Frage</th><th>Werkzeug</th><th>Ergebnis</th></tr></thead><tbody>
+    <tr><td>Wo im unbekannten Repository beginne ich?</td><td>Repo Map</td><td>kleine globale Vorauswahl</td></tr>
+    <tr><td>Wo ist dieses Symbol exakt definiert?</td><td>Serena</td><td>Pfad, Symbolart und optional Symbolkörper</td></tr>
+    <tr><td>Wer verwendet diese Methode?</td><td>Serena</td><td>semantisch aufgelöste Referenzen</td></tr>
+    <tr><td>Passt das Ergebnis zur fachlichen Aufgabe?</td><td>Pi + Mensch</td><td>begründete Auswahl des nächsten Schritts</td></tr>
+    <tr><td>Funktioniert eine Änderung?</td><td>Build + Tests</td><td>ausführbarer Verhaltensnachweis</td></tr>
+  </tbody></table>
+
+  <div class="callout success"><p class="callout-title">Kleines Beispiel aus dem Video</p><p>Die Repo Map zeigte den Bereich um <code>Vet</code>, Controller und Repository. Das Detail <code>Specialty</code> fehlte im begrenzten Ausschnitt. Serena fand dieses Symbol anschließend gezielt. Genau so soll die Übergabe von Landkarte zu Lupe aussehen.</p></div>
+
+  <h2>Woran du das mentale Modell erkennst</h2>
+  <ul class="checklist"><li><label><input type="checkbox">Ich erwarte von der Repo Map Orientierung, keine Vollständigkeit.</label></li><li><label><input type="checkbox">Ich nutze Serena erst für konkrete Symbol- oder Referenzfragen.</label></li><li><label><input type="checkbox">Ich behandle leere Treffer nicht automatisch als Beweis, dass etwas nicht existiert.</label></li><li><label><input type="checkbox">Ich verlange für Verhalten weiterhin Build und Tests.</label></li></ul>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine relevante Stelle und notiere deine Frage, deinen Einwand oder deinen Praxisfall als Kommentar.</li><li>Öffne deinen eigenen KI-Agenten und gib ihm diese Seite als Kontext: Lass ihn die Lesson-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><button class="lesson-complete" type="button"></button><div class="next"><strong>Nächster Schritt:</strong> <a href="0002-repo-map.html">Repo Map in Pi einrichten →</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>04 · Funktion und Wirkung prüfen</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="0004-verifikation" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a href="0001-kontext-ist-eine-pipeline.html">01 Verstehen</a><a href="0002-repo-map.html">02 Repo Map</a><a href="0003-serena-und-lsp.html">03 Serena</a><a aria-current="page" href="0004-pi-und-mcp.html">04 Prüfen</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Kapitel 04 · End-to-End-Nachweis</p>
+    <h1 class="lesson-title">So beweist du, dass es funktioniert</h1>
+    <p class="lesson-sub">Nicht die Installation zählt, sondern die beobachtbare Wirkung in einer echten Codebase.</p>
+    <div class="lesson-meta"><span>15 Minuten</span><span>Tool-Evidenz</span><span>Skalierungscheck</span></div>
+  </header>
+
+  <div class="callout learning-objective"><p class="callout-title">Dein Ergebnis</p><p>Du kannst Verfügbarkeit, Integration und tatsächlichen Nutzen getrennt prüfen und weißt, welche Effekte bei einer größeren Codebase sichtbar werden sollten.</p></div>
+
+  <h2>Der vollständige Nachweis</h2>
+  <div class="diagram">[1] CLIs vorhanden
+      ↓
+[2] echter repo_map-Aufruf liefert globale Kandidaten
+      ↓
+[3] echter Serena-Aufruf findet ein bekanntes Symbol
+      ↓
+[4] Serena löst eine konkrete Referenzfrage
+      ↓
+[5] Pi beendet sich sauber; Git bleibt unverändert</div>
+
+  <h2>Gate 1 · Verfügbarkeit</h2>
+  <pre><code>command -v pi aider serena git
+pi --version
+aider --version
+serena --version</code></pre>
+  <p>Dieses Gate beweist nur, dass die Programme erreichbar sind. Es beweist noch keine Integration.</p>
+
+  <h2>Gate 2 · Globale Orientierung</h2>
+  <p>Starte Pi im Git-Root einer Codebase, die groß genug ist, dass du den Einstieg nicht durch kurzes Scrollen vollständig erfassen kannst.</p>
+  <pre><code>Erzeuge einen echten repo_map-Aufruf mit 2048 Map-Tokens.
+Verändere keine Dateien. Nenne fünf sichtbare Einstiegspunkte und
+kennzeichne ausdrücklich, welche fachliche Detailfrage offen bleibt.</code></pre>
+  <p><strong>Bestanden, wenn:</strong> Der Tool-Call sichtbar ist, Pfade und Symbole aus deinem Repository stammen und die Ausgabe begrenzt bleibt.</p>
+
+  <h2>Gate 3 · Gezielte semantische Navigation</h2>
+  <p>Wähle einen der Einstiegspunkte aus der Map. Lass Serena zuerst die Definition und danach ihre Referenzen suchen:</p>
+  <pre><code>Verwende Serena read-only. Finde das Symbol &lt;SYMBOL_AUS_DER_MAP&gt;.
+Lies nur die für seine Rolle nötige Definition. Suche danach die
+referenzierenden Symbole. Trenne sichere Treffer von offenen Fragen.</code></pre>
+  <p><strong>Bestanden, wenn:</strong> echte Serena-Tool-Calls sichtbar sind, der Definitionspfad stimmt und mindestens eine Referenz manuell im Code oder in der IDE bestätigt werden kann.</p>
+
+  <h2>Gate 4 · Der entscheidende Übergang</h2>
+  <p>Jetzt prüfst du nicht nur beide Werkzeuge einzeln, sondern ihr Zusammenspiel:</p>
+  <ol><li>Die Repo Map liefert einen plausiblen Bereich.</li><li>Aus einem Map-Befund entsteht eine konkrete Symbolfrage.</li><li>Serena beantwortet genau diese Frage, ohne wahllos viele vollständige Dateien zu laden.</li><li>Pi kann danach genauer sagen, was bekannt ist und was noch geprüft werden muss.</li></ol>
+  <p>Wenn Serena lediglich dasselbe wiederholt wie die Map, war die zweite Frage zu ungenau. Wenn Pi direkt Dateien durchsucht, obwohl eine klare Symbolfrage vorliegt, wurde Serena nicht sinnvoll eingesetzt.</p>
+
+  <h2>Welche Effekte solltest du bei einer größeren Codebase beobachten?</h2>
+  <table><thead><tr><th>Beobachtung</th><th>Gewünschter Effekt</th><th>Warnsignal</th></tr></thead><tbody>
+    <tr><td>Größe der Repo Map</td><td>bleibt durch das Token-Budget begrenzt</td><td>vollständige Dateien oder riesiger Output</td></tr>
+    <tr><td>Erster Suchschritt</td><td>liefert wenige plausible Bereiche</td><td>ungeordnete Liste fast aller Dateien</td></tr>
+    <tr><td>Detailprüfung</td><td>wechselt zu konkreten Symbolfragen</td><td>weitere breite Suche ohne Hypothese</td></tr>
+    <tr><td>Kontextmenge</td><td>nur Definitionen und Referenzen nach Bedarf</td><td>ganze Module werden vorsorglich geladen</td></tr>
+    <tr><td>Auslassungen</td><td>werden sichtbar und gezielt geschlossen</td><td>fehlendes Symbol wird als irrelevant erklärt</td></tr>
+    <tr><td>Zweiter Lauf</td><td>Aiders lokaler Cache ist vorhanden</td><td>getrackte Projektdateien ändern sich</td></tr>
+  </tbody></table>
+
+  <h2>Ein belastbarer Vorher/Nachher-Test</h2>
+  <p>Nimm eine reale Frage, deren Antwort über mehrere Module verteilt ist. Führe sie zweimal in frischen Pi-Sitzungen aus:</p>
+  <ol><li><strong>Baseline:</strong> nur normale Datei- und Textsuche erlauben.</li><li><strong>Pipeline:</strong> zuerst Repo Map, danach Serena für konkrete Symbole verwenden.</li><li>Vergleiche Tool-Calls, geladene vollständige Dateien, falsche Einstiegspunkte und ungeklärte Behauptungen.</li></ol>
+  <p>Erwarte keine magische Prozentzahl. Der qualitative Gewinn ist erreicht, wenn die zweite Untersuchung früher zu begründeten Symbolfragen kommt, weniger breite Dateilesevorgänge benötigt und ihre Unsicherheiten klarer benennt.</p>
+
+  <h2>Gate 5 · Sauberer Abschluss</h2>
+  <p>Beende Pi regulär und prüfe anschließend:</p>
+  <pre><code>ps -axo pid=,ppid=,command= | \
+  grep -E '[s]erena start-mcp-server|[o]rg\.eclipse\.equinox\.launcher' || true
+
+git status --short</code></pre>
+  <p><strong>Bestanden, wenn:</strong> keine zur Sitzung gehörenden Serena-/JDTLS-Prozesse übrig bleiben und <code>git status --short</code> keine unerwartete Änderung zeigt.</p>
+
+  <div class="callout warning"><p class="callout-title">Wenn ein Gate fehlschlägt</p><ol><li><strong>Analyse:</strong> konkrete Fehlermeldung und betroffenes Gate benennen.</li><li><strong>Hypothese:</strong> genau eine plausible Ursache priorisieren.</li><li><strong>Nächster Befehl:</strong> einen engeren Check ausführen, der nur diese Ursache prüft.</li></ol><p>Wiederhole niemals denselben fehlgeschlagenen Aufruf unverändert.</p></div>
+
+  <h2>Abschlusscheck</h2>
+  <ul class="checklist"><li><label><input type="checkbox">Ich kann Repo Map und Serena ohne Buzzwords unterscheiden.</label></li><li><label><input type="checkbox">Pi hat beide Werkzeuge mit echten Tool-Calls ausgeführt.</label></li><li><label><input type="checkbox">Ein Serena-Treffer wurde unabhängig bestätigt.</label></li><li><label><input type="checkbox">Die Map blieb trotz größerer Codebase begrenzt.</label></li><li><label><input type="checkbox">Der Übergang von globaler Orientierung zu gezielter Navigation war sichtbar.</label></li><li><label><input type="checkbox">Git-Stand und Prozess-Cleanup sind sauber.</label></li></ul>
+
+  <div class="callout success"><p class="callout-title">Dann funktioniert dein Setup</p><p>Du hast nicht nur drei Programme installiert. Du hast gezeigt, dass Pi eine begrenzte Landkarte erzeugen, daraus eine präzise Frage ableiten und diese mit lokaler Code-Intelligence beantworten kann.</p></div>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine relevante Stelle und notiere deine Frage, deinen Einwand oder deinen Praxisfall als Kommentar.</li><li>Öffne deinen eigenen KI-Agenten und gib ihm diese Seite als Kontext: Lass ihn die Lesson-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><button class="lesson-complete" type="button"></button><div class="next"><strong>Fertig:</strong> <a href="../index.html">Zur Tutorial-Übersicht</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>

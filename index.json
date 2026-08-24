@@ -1,80 +1,59 @@
 {
+  "schema_version": 2,
   "sessions": [
     {
-      "session_id": "3f2ea033-36fd-4b1a-8617-1c9d39eb5bf1",
-      "slug": "klarheit-vor-gewissheit",
-      "title": "Klarheit vor Gewissheit",
+      "session_id": "0cf45253-c826-4fbf-8a8f-ce57aa8f77a7",
+      "slug": "grosse-codebasen-fuer-ki-agenten-erschliessen",
+      "title": "Große Codebasen für KI-Agenten erschließen",
       "topics": [
-        "Klarheit",
-        "Onboarding",
-        "Unsicherheit"
+        "KI-Agenten",
+        "Codebase",
+        "Context Engineering"
       ],
-      "source_video": "https://www.youtube.com/watch?v=RB2J640Xrvw",
-      "related_session_ids": [
-        "c09f6c36-794d-4236-86df-898c4839807b"
-      ],
-      "related_youtube_urls": []
-    },
-    {
-      "session_id": "7584588a-386b-4fec-86b8-159130599173",
-      "slug": "selbstbewusste-demut",
-      "title": "Selbstbewusste Demut",
-      "topics": [
-        "Führung",
-        "Kommunikation",
-        "Selbstbewusste Demut"
-      ],
-      "source_video": "https://www.youtube.com/watch?v=RB2J640Xrvw",
-      "related_session_ids": [
-        "b10b25f5-c791-4c89-82c1-11c4a9dfd383"
-      ],
-      "related_youtube_urls": []
-    },
-    {
-      "session_id": "7d23b561-cb71-4bd8-875f-2b445a99431a",
-      "slug": "der-erste-tag-auf-einer-seite",
-      "title": "Der erste Tag auf einer Seite",
-      "topics": [
-        "Erster Arbeitstag",
-        "Praxisplan",
-        "Tech Lead"
-      ],
-      "source_video": "https://www.youtube.com/watch?v=RB2J640Xrvw",
-      "related_session_ids": [
-        "3f2ea033-36fd-4b1a-8617-1c9d39eb5bf1",
-        "7584588a-386b-4fec-86b8-159130599173",
-        "b10b25f5-c791-4c89-82c1-11c4a9dfd383",
-        "c09f6c36-794d-4236-86df-898c4839807b"
-      ],
-      "related_youtube_urls": []
-    },
-    {
-      "session_id": "b10b25f5-c791-4c89-82c1-11c4a9dfd383",
-      "slug": "warum-der-start-alles-entscheidet",
-      "title": "Warum der Start alles entscheidet",
-      "topics": [
-        "Ersteindruck",
-        "Tech-Lead-Start",
-        "Vertrauen"
-      ],
-      "source_video": "https://www.youtube.com/watch?v=RB2J640Xrvw",
+      "sort_order": 200,
       "related_session_ids": [],
       "related_youtube_urls": []
     },
     {
-      "session_id": "c09f6c36-794d-4236-86df-898c4839807b",
-      "slug": "vom-pairing-zum-team-agreement",
-      "title": "Vom Pairing zum Team-Agreement",
+      "session_id": "15fc43b9-f343-4396-916f-db05c95ab0b7",
+      "slug": "neu-als-tech-lead-das-musst-du-zuerst-tun",
+      "title": "Neu als Tech Lead? Das musst du zuerst tun!",
       "topics": [
-        "Pairing",
-        "Psychologische Sicherheit",
-        "Team-Agreement"
+        "Führung",
+        "Onboarding",
+        "Tech Lead"
       ],
-      "source_video": "https://www.youtube.com/watch?v=RB2J640Xrvw",
-      "related_session_ids": [
-        "7584588a-386b-4fec-86b8-159130599173"
-      ],
-      "related_youtube_urls": []
+      "sort_order": 100,
+      "related_session_ids": [],
+      "related_youtube_urls": [],
+      "source_video": "https://www.youtube.com/watch?v=RB2J640Xrvw"
+    }
+  ],
+  "redirects": [
+    {
+      "from": "der-erste-tag-auf-einer-seite",
+      "to": "neu-als-tech-lead-das-musst-du-zuerst-tun/lessons/0005-der-erste-tag-auf-einer-seite.html",
+      "owner_session_id": "15fc43b9-f343-4396-916f-db05c95ab0b7"
+    },
+    {
+      "from": "klarheit-vor-gewissheit",
+      "to": "neu-als-tech-lead-das-musst-du-zuerst-tun/lessons/0004-klarheit-vor-gewissheit.html",
+      "owner_session_id": "15fc43b9-f343-4396-916f-db05c95ab0b7"
+    },
+    {
+      "from": "selbstbewusste-demut",
+      "to": "neu-als-tech-lead-das-musst-du-zuerst-tun/lessons/0002-selbstbewusste-demut.html",
+      "owner_session_id": "15fc43b9-f343-4396-916f-db05c95ab0b7"
+    },
+    {
+      "from": "vom-pairing-zum-team-agreement",
+      "to": "neu-als-tech-lead-das-musst-du-zuerst-tun/lessons/0003-vom-pairing-zum-team-agreement.html",
+      "owner_session_id": "15fc43b9-f343-4396-916f-db05c95ab0b7"
+    },
+    {
+      "from": "warum-der-start-alles-entscheidet",
+      "to": "neu-als-tech-lead-das-musst-du-zuerst-tun/lessons/0001-warum-der-start-alles-entscheidet.html",
+      "owner_session_id": "15fc43b9-f343-4396-916f-db05c95ab0b7"
     }
   ]
 }
