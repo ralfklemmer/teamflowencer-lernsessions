@@ -1,0 +1,418 @@
+/* Annotations-Engine v3.2 – Styling
+   - Signalfarbe BLAU (signalstark, kein Konflikt mit Teach-Skill-Gelb oder rotem Akzent)
+   - Inline: kräftige gepunktete Linie in voller Deckung
+   - Block: vertikale Gutter-Linie rechts, kräftig
+   - Button-Reihenfolge: Löschen (rot, destruktiv) links, Speichern (blau, Default) rechts
+   - CSS-Variablen für einfaches Tuning der Farbe
+*/
+
+/* ─── Farbsystem (zentral änderbar) ─────────────────────────────────── */
+:root {
+  --ann-signal: #2563eb;            /* Primary – saturiertes Signalblau */
+  --ann-signal-strong: #1d4ed8;     /* Hover/Active – dunkler */
+  --ann-signal-soft: rgba(37, 99, 235, 0.14);   /* Active-Hintergrund, Badges */
+  --ann-signal-glow: rgba(37, 99, 235, 0.30);   /* Active-Glow */
+  --ann-danger: #b4341f;            /* Löschen – bleibt Rot als Konvention */
+  --ann-danger-soft: #e8c8c0;
+}
+
+/* ─── Inline-Highlight ──────────────────────────────────────────────── */
+/* Kräftige gepunktete Linie in voller Deckung – signalstark, aber kein
+   Hintergrund (kein Konflikt mit gelben Teach-Skill-Highlights). */
+mark.ann-highlight {
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--ann-signal);
+  text-decoration-thickness: 2.5px;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.15s, background 0.15s;
+  padding: 0 1px;
+}
+mark.ann-highlight:hover {
+  text-decoration-color: var(--ann-signal-strong);
+  background: var(--ann-signal-soft);
+}
+mark.ann-highlight.ann-active {
+  text-decoration-style: solid;
+  text-decoration-color: var(--ann-signal-strong);
+  text-decoration-thickness: 3px;
+  background: var(--ann-signal-soft);
+  border-radius: 2px;
+}
+
+/* ─── Block-Highlight (ganze Absätze) ───────────────────────────────── */
+/* Vertikale Linie rechts außen (Gutter) – kräftig und sichtbar. */
+.ann-block {
+  position: relative;
+  padding-right: 14px !important;
+}
+.ann-block::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  right: 0;
+  width: 4px;
+  background: var(--ann-signal);
+  border-radius: 2px;
+  transition: background 0.15s, width 0.15s, box-shadow 0.15s;
+}
+.ann-block:hover::after {
+  background: var(--ann-signal-strong);
+  width: 5px;
+}
+.ann-block.ann-active::after {
+  background: var(--ann-signal-strong);
+  width: 6px;
+  box-shadow: -3px 0 0 var(--ann-signal-glow);
+}
+.ann-block:hover {
+  background: var(--ann-signal-soft);
+}
+
+/* ─── Status Bar ────────────────────────────────────────────────────── */
+.ann-status {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 9998;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(8px);
+  border: 1px solid #d8d4cc;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 6px 10px;
+  font-size: 12px;
+  max-width: calc(100vw - 24px);
+}
+.ann-status-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ann-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ann-signal);
+  flex-shrink: 0;
+}
+.ann-status-text {
+  color: #444;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ann-status-actions {
+  display: flex;
+  gap: 4px;
+  border-left: 1px solid #e0dcd2;
+  padding-left: 8px;
+  margin-left: 4px;
+}
+.ann-status-actions .ann-btn {
+  font-size: 11px;
+  padding: 3px 8px;
+  background: #f4f1ea;
+  border: 1px solid #d8d4cc;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #444;
+  white-space: nowrap;
+}
+.ann-status-actions .ann-btn:hover {
+  background: #fff;
+  border-color: var(--ann-signal);
+  color: var(--ann-signal);
+}
+.ann-status-actions .ann-btn-clear-all {
+  color: var(--ann-danger);
+  border-color: var(--ann-danger-soft);
+}
+.ann-status-actions .ann-btn-clear-all:hover:not(:disabled) {
+  background: #f7e0e0;
+  border-color: var(--ann-danger);
+  color: var(--ann-danger);
+}
+.ann-status-actions .ann-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+@media (max-width: 640px) {
+  .ann-status { font-size: 11px; padding: 5px 8px; }
+  .ann-status-text { max-width: 120px; }
+  .ann-status-actions .ann-btn { padding: 3px 6px; font-size: 10px; }
+}
+
+/* ─── Floating Action Button ────────────────────────────────────────── */
+.ann-fab {
+  position: absolute;
+  z-index: 9997;
+  background: var(--ann-signal);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: none;
+}
+.ann-fab:hover { background: var(--ann-signal-strong); }
+.ann-fab::before { content: "✎ "; }
+
+/* ─── Popover ───────────────────────────────────────────────────────── */
+.ann-popover {
+  position: absolute;
+  z-index: 9999;
+  background: white;
+  border: 1px solid #d8d4cc;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  width: 340px;
+  max-width: calc(100vw - 20px);
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden;
+}
+.ann-popover-head {
+  background: #f4f1ea;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e0dcd2;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.ann-popover-quote {
+  font-style: italic;
+  font-size: 12px;
+  color: #555;
+  flex: 1;
+  line-height: 1.4;
+  font-family: 'Iowan Old Style', Georgia, serif;
+}
+.ann-popover-mode {
+  display: inline-block;
+  font-style: normal;
+  font-family: -apple-system, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--ann-signal);
+  color: white;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.ann-popover-x {
+  background: none;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.ann-popover-x:hover { color: var(--ann-danger); }
+.ann-popover-input {
+  width: 100%;
+  border: none;
+  padding: 10px 12px;
+  font-family: 'Iowan Old Style', Georgia, serif;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  color: #1a1a1a;
+}
+.ann-popover-input:focus { background: #fffef5; }
+.ann-popover-hint {
+  padding: 0 12px 4px;
+  font-size: 11px;
+  color: #999;
+  font-family: -apple-system, sans-serif;
+}
+.ann-popover-actions {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  border-top: 1px solid #e0dcd2;
+  background: #fafaf6;
+}
+.ann-popover-actions .ann-btn {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid #d8d4cc;
+  background: white;
+  color: #444;
+  font-family: inherit;
+}
+.ann-popover-actions .ann-btn:hover { background: #f4f1ea; }
+/* Speichern = Default-Aktion (rechts, signalblau) */
+.ann-popover-actions .ann-btn-save {
+  background: var(--ann-signal);
+  color: white;
+  border-color: var(--ann-signal);
+  margin-left: auto;  /* rechts ausrichten */
+}
+.ann-popover-actions .ann-btn-save:hover { background: var(--ann-signal-strong); }
+/* Löschen = sekundär (links, ROT bleibt als destruktive Konvention) */
+.ann-popover-actions .ann-btn-del {
+  color: var(--ann-danger);
+  border-color: var(--ann-danger-soft);
+}
+.ann-popover-actions .ann-btn-del:hover { background: #f7e0e0; }
+
+/* ─── Annotation List – Overlay ─────────────────────────────────────── */
+.ann-list {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.ann-list-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+}
+.ann-list-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 480px;
+  max-width: 90vw;
+  background: white;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+.ann-list-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0dcd2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f4f1ea;
+}
+.ann-list-head h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.ann-list-head > div {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.ann-list-copy {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 12px;
+  padding: 4px 10px;
+  background: var(--ann-signal);
+  color: white;
+  border: 1px solid var(--ann-signal);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.ann-list-copy:hover { background: var(--ann-signal-strong); }
+.ann-list-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+  line-height: 1;
+}
+.ann-list-close:hover { color: var(--ann-danger); }
+.ann-list-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 20px;
+}
+.ann-list-empty {
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  margin-top: 40px;
+}
+.ann-list-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #f0ece4;
+  cursor: pointer;
+}
+.ann-list-item:hover { background: #fffef5; }
+.ann-list-item:last-child { border-bottom: none; }
+.ann-list-n {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ann-signal);
+  margin-bottom: 4px;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ann-mode-badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.ann-mode-block {
+  background: var(--ann-signal-soft);
+  color: var(--ann-signal-strong);
+}
+.ann-mode-inline {
+  background: #e0dcd2;
+  color: #555;
+}
+.ann-list-quote {
+  font-style: italic;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 6px;
+  line-height: 1.4;
+  border-left: 2px solid #d8d4cc;
+  padding-left: 10px;
+}
+.ann-list-comment {
+  font-size: 14px;
+  color: #1a1a1a;
+  line-height: 1.5;
+  margin-bottom: 4px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.ann-list-meta {
+  font-size: 11px;
+  color: #999;
+}
+
+/* ─── Print ─────────────────────────────────────────────────────────── */
+@media print {
+  .ann-status, .ann-fab, .ann-popover, .ann-list { display: none !important; }
+  mark.ann-highlight {
+    text-decoration: underline dotted var(--ann-signal);
+  }
+  .ann-block::after {
+    background: var(--ann-signal) !important;
+  }
+}
