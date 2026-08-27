@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Glossar · Pi, Aider, Serena</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/course.css"></head>
+<body><main class="lesson"><header class="lesson-header"><p class="lesson-eyebrow"><a href="../index.html">Kurs</a> · Referenz 01</p><h1 class="lesson-title">Glossar: Kontextarchitektur</h1><p class="lesson-sub">Begriffe so eng definieren, dass Tool-Befund und Modellinterpretation getrennt bleiben.</p></header>
+<table><thead><tr><th>Begriff</th><th>Arbeitsdefinition</th><th>Nicht verwechseln mit</th></tr></thead><tbody>
+<tr><td><strong>Agent Loop</strong></td><td>Wiederholung aus Modellentscheidung, Tool-Aufruf, Beobachtung und nächster Entscheidung.</td><td>Einmaliger Prompt oder autonome Korrektheit.</td></tr>
+<tr><td><strong>Context Window</strong></td><td>Begrenzter Eingaberaum, den das Modell in einem Request verarbeiten kann.</td><td>Repository-Index oder garantiert nutzbare Aufmerksamkeit.</td></tr>
+<tr><td><strong>Repo Map</strong></td><td>Kompakte Textdarstellung priorisierter Dateien, Symbole und ausgewählter Definitionszeilen.</td><td>Vollständiger Syntaxbaum, Call Graph oder Architekturmodell.</td></tr>
+<tr><td><strong><code>map_tokens</code></strong></td><td>Ungefähres Zielbudget, das Aider beim Rendern der Repo Map anstrebt.</td><td>Garantie einer exakten Ausgabegröße.</td></tr>
+<tr><td><strong>Tree-sitter</strong></td><td>Parsing-System, aus dessen sprachspezifischen Abfragen Aider Definitionen und Referenzen gewinnen kann.</td><td>Die fertige Repo Map oder vollständige Typauflösung.</td></tr>
+<tr><td><strong>Symbol</strong></td><td>Benannter Codebaustein wie Klasse, Methode, Feld oder Interface.</td><td>Beliebiger Texttreffer.</td></tr>
+<tr><td><strong>Referenz</strong></td><td>Codeposition, die ein aufgelöstes Symbol verwendet.</td><td>Gleichlautende Zeichenfolge.</td></tr>
+<tr><td><strong>Language Server</strong></td><td>Separater Prozess mit sprachspezifischer Code-Intelligence hinter einem standardisierten Protokoll.</td><td>MCP-Server oder LLM.</td></tr>
+<tr><td><strong>LSP</strong></td><td>JSON-RPC-basiertes Protokoll zwischen Entwicklungswerkzeug und Language Server.</td><td>Der Sprachindex selbst.</td></tr>
+<tr><td><strong>JDTLS</strong></td><td>Language Server für Java und praktisch validierter Pfad dieses Tutorials.</td><td>Beleg, dass andere Sprachen identisch funktionieren.</td></tr>
+<tr><td><strong>Serena</strong></td><td>Werkzeugschicht, die Symboloperationen über ein Backend wie LSP als Agent-Tools anbietet.</td><td>Eigenes Sprachmodell.</td></tr>
+<tr><td><strong>MCP</strong></td><td>Protokoll für Host–Client–Server-Kommunikation über Tools, Resources und Prompts.</td><td>Language Server oder Sicherheits-Sandbox.</td></tr>
+<tr><td><strong>Tool Schema</strong></td><td>Beschreibung und Parameterschema, anhand derer das Modell ein Tool auswählen und aufrufen kann.</td><td>Tool-Ergebnis; beides beansprucht Kontext.</td></tr>
+<tr><td><strong>Lazy Lifecycle</strong></td><td>Serverstart beim ersten benötigten Aufruf mit kontrolliertem Shutdown am Sitzungsende.</td><td>Stets laufender Daemon.</td></tr>
+<tr><td><strong>Evidenz</strong></td><td>Beobachtbarer Tool-Call, Tool-Befund oder manueller Codefund, der eine Aussage stützt.</td><td>Selbstbewusste Modellformulierung.</td></tr>
+</tbody></table>
+<div class="callout learning-objective"><p class="callout-title">Token-Präzision</p><p>Aider sendet für <code>--show-repo-map</code> selbst keine LLM-Anfrage. Tool-Schema und erzeugte Map gelangen jedoch in Pis Agent Loop und beanspruchen dort Modellkontext.</p></div>
+<footer class="lesson-footer"><a href="../index.html">← Kursübersicht</a> · <a href="0002-werkzeugwahl.html">Werkzeugwahl →</a></footer></main></body></html>

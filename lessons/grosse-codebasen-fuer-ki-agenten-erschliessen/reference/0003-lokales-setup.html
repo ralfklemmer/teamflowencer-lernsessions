@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lokales Setup · Pi, Aider, Serena</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/course.css"></head>
+<body><main class="lesson" data-lesson-id="ref-0003-lokales-setup"><header class="lesson-header"><p class="lesson-eyebrow"><a href="../index.html">Kurs</a> · Referenz 03</p><h1 class="lesson-title">Lokales Setup: Kurz-Runbook</h1><p class="lesson-sub">Gepinnte Versionen, Java-/JDTLS-Pfad und sichtbare Prozess- sowie Git-Invarianten.</p></header>
+<div class="callout success"><p class="callout-title">Lokal verifiziert · 2026-08-24</p><p>Pi 0.84.2 · Aider 0.86.2 · Serena 1.7.0 · uv 0.11.25 · Java mit JDTLS. Repo Map, Serena-Health-Check und ein bekannter Symboltreffer waren erfolgreich. Andere Sprachpfade wurden für dieses Tutorial nicht praktisch geprüft.</p></div>
+<h2>Voraussetzungen und Versionen</h2><pre><code>command -v pi aider serena uv java git
+pi --version
+aider --version
+serena --version
+uv --version
+java -version
+git --version</code></pre>
+<h2>Gepinnte Installation</h2><pre><code>uv python install 3.12
+uv tool install --force --python python3.12 --with pip 'aider-chat==0.86.2'
+uv tool install -p 3.13 'serena-agent==1.7.0'
+serena init
+
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent@0.84.2
+pi install npm:pi-mcp-adapter@2.27.0</code></pre>
+<p class="source-note"><a href="https://oraios.github.io/serena/02-usage/010_installation.html">Serena Installation</a> · <a href="https://aider.chat/docs/install.html">Aider Installation</a>. Drittcode vor Installation prüfen; Pi-Pakete laufen mit Benutzerrechten.</p>
+<p>Die Repo-Map-Extension für den <code>repo_map</code>-Nachweis unten ist hier nicht enthalten: Sie wird aus der gepinnten GitHub-Quelle installiert – Befehl, Commit-SHA und Release-Record stehen in <a href="../lessons/0002-repo-map.html">Kapitel 02</a>.</p>
+<h2>Java-Projekt vorbereiten</h2><pre><code>cd /authentisch/ermittelter/pfad/zum/projekt
+git rev-parse --show-toplevel
+serena project create --language java .
+serena project index .
+serena project health-check .
+git status --short</code></pre>
+<p>Lokale Artefakte über <code>.git/info/exclude</code> ausschließen: <code>.aider.tags.cache.v4/</code>, <code>.serena/</code>, <code>.mcp.json</code>. Die vollständige <code>.mcp.json</code>-Erzeugung steht in Kapitel 03.</p>
+<h2>Pi-Anbindung: Invarianten</h2><ul><li>absoluter, per <code>command -v serena</code> ermittelter Befehl,</li><li>authentischer Projektpfad als <code>cwd</code>,</li><li><code>--context ide</code> gegen Tool-Dopplung,</li><li><code>--project-from-cwd</code> für das aktive Repository,</li><li><code>lifecycle: "lazy"</code> gegen Doppelstarts,</li><li>explizite direkte read-only Serena-Werkzeuge.</li></ul>
+<h2>Minimaler read-only Nachweis</h2><ol class="checklist"><li><label><input type="checkbox">Pi im Projekt-Root starten.</label></li><li><label><input type="checkbox"><code>/mcp</code>: Serena und Lazy-Status prüfen.</label></li><li><label><input type="checkbox"><code>repo_map</code> einmal mit <code>map_tokens=2048</code> ausführen.</label></li><li><label><input type="checkbox">Mit Serena ein vorher bekanntes Symbol samt Pfad finden.</label></li><li><label><input type="checkbox">Treffer direkt im Quelltext bestätigen.</label></li><li><label><input type="checkbox">Pi regulär beenden und Git-Stand vergleichen.</label></li></ol>
+<pre><code>ps -axo pid=,ppid=,command= | \
+  grep -E '[s]erena start-mcp-server|[o]rg\.eclipse\.equinox\.launcher' || true
+git status --short</code></pre>
+<div class="callout warning"><p class="callout-title">Kein blindes Cleanup</p><p>Niemals pauschal alle Java-Prozesse beenden. Prozess, Startzeit und vollständiges Kommando prüfen; nur eindeutig zuordenbare PIDs terminieren.</p></div>
+<footer class="lesson-footer"><a href="0002-werkzeugwahl.html">← Werkzeugwahl</a> · <a href="0004-evidenz-review.html">Evidenz-Arbeitsblatt →</a></footer><script src="../assets/course.js"></script></main></body></html>

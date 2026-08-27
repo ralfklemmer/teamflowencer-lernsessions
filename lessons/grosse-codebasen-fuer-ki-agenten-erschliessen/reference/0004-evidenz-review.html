@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Read-only Evidenz · Pi, Aider, Serena</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/course.css"></head>
+<body><main class="lesson" data-lesson-id="ref-0004-evidenz-review"><header class="lesson-header"><p class="lesson-eyebrow"><a href="../index.html">Kurs</a> · Referenz 04</p><h1 class="lesson-title">Read-only Evidenz-Arbeitsblatt</h1><p class="lesson-sub">Von der Ausgangsfrage zum manuell bestätigten Symbolbefund – ohne die Codebase zu verändern.</p></header>
+<div class="evidence-ladder"><div class="evidence-step"><strong>1 · Frage</strong>Konkrete Navigationsfrage aus dem eigenen Repository.</div><div class="evidence-step"><strong>2 · Orientierung</strong>Repo Map zeigt Pfad oder Symbol.</div><div class="evidence-step"><strong>3 · Semantik</strong>Serena bestätigt Definition oder Referenz.</div><div class="evidence-step"><strong>4 · Gegenprüfung</strong>Quelltext und Git-Zustand bestätigen den Befund.</div></div>
+<p>Die Stufen ersetzen einander nicht. Eine Map ist bewusst unvollständig; eine Referenzsuche kann dynamische Verbindungen auslassen; eine manuelle Prüfung gilt nur für die tatsächlich betrachtete Stelle. Gute Antworten benennen deshalb Befund und Grenze gemeinsam.</p>
+<h2>Arbeitsblatt</h2><table class="worksheet"><thead><tr><th>Feld</th><th>Eintrag</th></tr></thead><tbody>
+<tr><td>Ausgangsfrage</td><td><span class="worksheet-space">Welche konkrete Navigationsfrage soll beantwortet werden?</span></td></tr>
+<tr><td>Repo-Map-Befund</td><td><span class="worksheet-space">Welche höchstens drei Pfade oder Symbole sind sichtbar?</span></td></tr>
+<tr><td>Gewähltes Symbol</td><td><span class="worksheet-space">Welches Symbol fokussiert die nächste Abfrage?</span></td></tr>
+<tr><td>Serena-Beleg</td><td><span class="worksheet-space">Tool, Pfad, Symbolart und eine Definition oder Referenz.</span></td></tr>
+<tr><td>Manuelle Gegenprüfung</td><td><span class="worksheet-space">Was wurde direkt im Quelltext oder in der IDE bestätigt?</span></td></tr>
+<tr><td>Offene Unsicherheit</td><td><span class="worksheet-space">Welche Aussage ist mit diesen Befunden noch nicht gedeckt?</span></td></tr>
+<tr><td>Git vorher/nachher</td><td><span class="worksheet-space">Sind Status sowie staged und unstaged Diff identisch?</span></td></tr>
+</tbody></table>
+<h2>Prompt-Contract</h2><pre><code>Untersuche ausschließlich read-only und verändere keine Dateien.
+Beginne mit repo_map und nenne nur sichtbare Befunde.
+Formuliere daraus genau eine Symbolfrage für Serena.
+Trenne Tool-Beleg, Interpretation und offene Unsicherheit.
+Bestätige den zentralen Treffer anschließend direkt im Quelltext.</code></pre>
+<h2>Qualitätscheck</h2><ol class="checklist"><li><label><input type="checkbox">Die Frage verlangt Orientierung, keine Dateiänderung.</label></li><li><label><input type="checkbox">Jeder notierte Map-Befund steht tatsächlich in der Tool-Ausgabe.</label></li><li><label><input type="checkbox">Der Serena-Call beantwortet eine konkrete Symbolfrage.</label></li><li><label><input type="checkbox">Mindestens ein zentraler Befund wurde unabhängig bestätigt.</label></li><li><label><input type="checkbox">Eine verbleibende Unsicherheit ist ausdrücklich benannt.</label></li><li><label><input type="checkbox">Der getrackte Zustand blieb unverändert.</label></li></ol>
+<footer class="lesson-footer"><a href="0003-lokales-setup.html">← Setup</a> · <a href="0005-fehlerdiagnose.html">Fehlerdiagnose →</a></footer><script src="../assets/course.js"></script></main></body></html>

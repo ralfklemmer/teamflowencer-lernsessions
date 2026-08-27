@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Werkzeugwahl · Pi, Aider, Serena</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/course.css"></head>
+<body><main class="lesson"><header class="lesson-header"><p class="lesson-eyebrow"><a href="../index.html">Kurs</a> · Referenz 02</p><h1 class="lesson-title">Werkzeugwahl nach Erkenntnisfrage</h1><p class="lesson-sub">Nicht „welches Tool ist besser?“, sondern „welche read-only Unsicherheit soll als Nächstes sinken?“</p></header>
+<table><thead><tr><th>Frage</th><th>Erster Zug</th><th>Typischer Beleg</th><th>Grenze</th></tr></thead><tbody>
+<tr><td>Wo beginnt die Untersuchung?</td><td>Aider Repo Map</td><td>Priorisierte Pfade und Symbole</td><td>Kann relevante Randbereiche auslassen.</td></tr>
+<tr><td>Wo ist ein Symbol definiert?</td><td>Serena <code>find_symbol</code></td><td>Relativer Pfad, Symbolart, Namenspfad</td><td>Projekt und Index müssen korrekt geladen sein.</td></tr>
+<tr><td>Wer verwendet dieses Symbol?</td><td>Serena <code>find_referencing_symbols</code></td><td>Aufgelöste Referenzen mit umgebenden Symbolen</td><td>Reflection, Konfiguration und Strings können fehlen.</td></tr>
+<tr><td>Welche Implementierungen existieren?</td><td>Serena <code>find_implementations</code></td><td>Implementierende Symbole</td><td>Language-Server-Fähigkeit ist entscheidend.</td></tr>
+<tr><td>Wo steht ein Textmuster?</td><td><code>rg</code> / Pattern-Suche</td><td>Exakter Texttreffer</td><td>Keine Typ- oder Symbolsemantik.</td></tr>
+<tr><td>Was steht in dieser Methode?</td><td>Serena mit <code>include_body</code> oder gezieltes Lesen</td><td>Konkreter Methodenkörper</td><td>Keine Aussage über ausgeführte Laufzeitpfade.</td></tr>
+<tr><td>Ist der semantische Treffer plausibel?</td><td>Editor oder IDE</td><td>Manuell bestätigte Definition und Beziehung</td><td>Bleibt auf die geprüfte Stelle begrenzt.</td></tr>
+<tr><td>Hat die Sitzung getrackte Dateien berührt?</td><td><code>git status</code> und gespeicherter Vorher/Nachher-Vergleich</td><td>Identischer Status und Diff</td><td>Ungetrackte Artefakte separat prüfen.</td></tr>
+</tbody></table>
+<div class="diagram">breite Unsicherheit           enge Symbolfrage           Gegenprüfung
+       │                          │                         │
+       ▼                          ▼                         ▼
+   Repo Map ────────────────► Serena / Lesen ─────────► Editor + Git
+       │                          │                         │
+    Orientierung              Definitionen              Kontrolle
+</div>
+<div class="callout warning"><p class="callout-title">Wichtige Negativregel</p><p>Ein leerer Treffer bedeutet zunächst „das gewählte Werkzeug lieferte keinen Treffer“ – nicht „das Symbol oder die Beziehung existiert nicht“.</p></div>
+<footer class="lesson-footer"><a href="0001-glossar.html">← Glossar</a> · <a href="0003-lokales-setup.html">Lokales Setup →</a></footer></main></body></html>

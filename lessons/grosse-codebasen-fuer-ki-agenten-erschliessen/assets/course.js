@@ -1,6 +1,19 @@
 (function () {
   'use strict';
 
+  // Überbreite Code-/Diagramm-Blöcke per Tastatur scrollbar machen (WCAG 2.1.1):
+  // nur Elemente mit tatsächlichem horizontalem Überlauf bekommen einen Tab-Stopp.
+  function syncScrollableTabStops() {
+    document.querySelectorAll('pre, .diagram').forEach(function (el) {
+      el.tabIndex = el.scrollWidth > el.clientWidth ? 0 : -1;
+    });
+  }
+  syncScrollableTabStops();
+  window.addEventListener('resize', syncScrollableTabStops);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(syncScrollableTabStops);
+  }
+
   var root = document.querySelector('[data-lesson-id]');
   if (!root) return;
   var lessonId = root.dataset.lessonId;

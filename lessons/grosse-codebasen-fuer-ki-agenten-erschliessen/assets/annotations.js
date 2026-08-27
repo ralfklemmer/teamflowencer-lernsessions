@@ -288,9 +288,11 @@
 
   // ─── UI: Popover ────────────────────────────────────────────────────
   var popover = null;
+  var popoverReturnFocus = null;
 
   function openPopover(annotation) {
     closePopover();
+    popoverReturnFocus = document.activeElement;
     activeAnnotationId = annotation.id;
 
     clearActiveStates();
@@ -405,6 +407,10 @@
     document.removeEventListener('mousedown', onOutsideClick);
     activeAnnotationId = null;
     clearActiveStates();
+    if (popoverReturnFocus && document.body.contains(popoverReturnFocus)) {
+      popoverReturnFocus.focus();
+    }
+    popoverReturnFocus = null;
   }
 
   // ─── Klick-Handling: Inline + Block ─────────────────────────────────
@@ -561,12 +567,12 @@
           var modeBadge = ann.mode === 'block'
             ? '<span class="ann-mode-badge ann-mode-block">Abschnitt</span>'
             : '<span class="ann-mode-badge ann-mode-inline">Text</span>';
-          return '<div class="ann-list-item" data-id="' + ann.id + '">' +
-                   '<div class="ann-list-n">' + modeBadge + ' #' + (i + 1) + '</div>' +
-                   '<div class="ann-list-quote">„' + escapeHtml(ann.quote.slice(0, 120)) + (ann.quote.length > 120 ? '…' : '') + '"</div>' +
-                   (ann.note ? '<div class="ann-list-comment">' + escapeHtml(ann.note) + '</div>' : '<div class="ann-list-comment" style="color:#999;font-style:italic;">(noch kein Kommentar)</div>') +
-                   '<div class="ann-list-meta">' + new Date(ann.createdAt).toLocaleString('de-DE') + '</div>' +
-                 '</div>';
+          return '<button class="ann-list-item" type="button" data-id="' + ann.id + '">' +
+                   '<span class="ann-list-n">' + modeBadge + ' #' + (i + 1) + '</span>' +
+                   '<span class="ann-list-quote">„' + escapeHtml(ann.quote.slice(0, 120)) + (ann.quote.length > 120 ? '…' : '') + '"</span>' +
+                   (ann.note ? '<span class="ann-list-comment">' + escapeHtml(ann.note) + '</span>' : '<span class="ann-list-comment" style="color:#6b6b66;font-style:italic;">(noch kein Kommentar)</span>') +
+                   '<span class="ann-list-meta">' + new Date(ann.createdAt).toLocaleString('de-DE') + '</span>' +
+                 '</button>';
         }).join('');
 
     overlay.innerHTML =
@@ -583,14 +589,19 @@
       '</div>';
 
     document.body.appendChild(overlay);
-    overlay.querySelector('.ann-list-backdrop').addEventListener('click', function () { overlay.remove(); });
-    overlay.querySelector('.ann-list-close').addEventListener('click', function () { overlay.remove(); });
+    function closeList() {
+      overlay.remove();
+      var opener = document.getElementById('ann-list');
+      if (opener) opener.focus();
+    }
+    overlay.querySelector('.ann-list-backdrop').addEventListener('click', closeList);
+    overlay.querySelector('.ann-list-close').addEventListener('click', closeList);
     overlay.querySelector('.ann-list-copy').addEventListener('click', function () { document.getElementById('ann-copy').click(); });
     overlay.querySelectorAll('.ann-list-item').forEach(function (item) {
       item.addEventListener('click', function () {
         var id = item.dataset.id;
         var ann = annotations.find(function (a) { return a.id === id; });
-        overlay.remove();
+        closeList();
         if (ann) openPopover(ann);
       });
     });
@@ -614,7 +625,11 @@
     if (e.key === 'Escape') {
       closePopover();
       var list = document.querySelector('.ann-list');
-      if (list) list.remove();
+      if (list) {
+        list.remove();
+        var opener = document.getElementById('ann-list');
+        if (opener) opener.focus();
+      }
     }
   });
 

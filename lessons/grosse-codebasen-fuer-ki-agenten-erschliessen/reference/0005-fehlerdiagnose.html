@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fehlerdiagnose · Pi, Aider, Serena</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/course.css"></head>
+<body><main class="lesson"><header class="lesson-header"><p class="lesson-eyebrow"><a href="../index.html">Kurs</a> · Referenz 05</p><h1 class="lesson-title">Fehlerdiagnose ohne Blindflug</h1><p class="lesson-sub">Jeder Fehler wird zu einer engeren Hypothese, nicht zu einem unveränderten Retry.</p></header>
+<div class="diagram">Fehlermeldung
+    ↓
+1. Beobachtung isolieren
+    ↓
+2. genau eine Ursache priorisieren
+    ↓
+3. engeren Diagnosebefehl ausführen
+    ↓
+Hypothese bestätigen oder verwerfen
+</div>
+<table><thead><tr><th>Symptom</th><th>Erste Hypothese</th><th>Nächster enger Check</th></tr></thead><tbody>
+<tr><td><code>Not a Git repository</code></td><td>Falsches Arbeitsverzeichnis</td><td><code>git rev-parse --show-toplevel</code></td></tr>
+<tr><td><code>repo_map</code> fehlt</td><td>Extension nicht registriert oder Sitzung zu alt</td><td><code>pi list</code>; danach neue Sitzung starten</td></tr>
+<tr><td>Repo Map enthält Zielsymbol nicht</td><td>Budget-/Ranking-Auslassung</td><td>Serena <code>find_symbol</code>; Budget nicht reflexhaft erhöhen</td></tr>
+<tr><td>Repo Map ist unerwartet groß</td><td><code>map_tokens</code> wurde nicht wie erwartet übergeben</td><td>Parameter im sichtbaren Tool-Call prüfen</td></tr>
+<tr><td>Serena findet bekanntes Symbol nicht</td><td>Projekt, Index oder Sprache falsch</td><td><code>serena project health-check .</code> im authentischen Root</td></tr>
+<tr><td>Referenzsuche leer</td><td>Falscher Namenspfad oder dynamische Verbindung</td><td>Definition mit vollständigem Symbolpfad lesen; ergänzend Textsuche</td></tr>
+<tr><td><code>/mcp</code> fehlgeschlagen</td><td><code>command</code>, <code>cwd</code> oder Argumente falsch</td><td>Konfiguration gegen <code>command -v serena</code> und <code>pwd -P</code> vergleichen</td></tr>
+<tr><td>Erster Serena-Call langsam</td><td>Lazy-Start plus LSP-Aufwärmung</td><td>Prozessstart und einen bekannten Symbolcall beobachten</td></tr>
+<tr><td>JDTLS bleibt aktiv</td><td>Lifecycle- oder Abbruchproblem</td><td>PID, PPID, Startzeit und vollständiges Kommando zeigen</td></tr>
+<tr><td>Git-Vergleich weicht ab</td><td>Getrackter Zustand wurde während der Übung verändert</td><td>Gespeicherte Vorher-/Nachher-Statusdateien mit <code>diff -u</code> vergleichen</td></tr>
+</tbody></table>
+<div class="callout warning"><p class="callout-title">Drei harte Regeln</p><p>Keinen identischen Tool-Aufruf wiederholen. Leere Ergebnisse nicht zu Negativbeweisen aufblasen. Prozesse nur nach eindeutiger Zuordnung beenden.</p></div>
+<h2>Was du für eine Diagnose notierst</h2><ul><li>exakter Befehl oder Tool-Name,</li><li>Arbeitsverzeichnis aus <code>pwd -P</code>,</li><li>erste konkrete Fehlermeldung,</li><li>Version des betroffenen Werkzeugs,</li><li>letzter erfolgreich belegter Schritt,</li><li>genau eine als Nächstes geprüfte Hypothese.</li></ul>
+<footer class="lesson-footer"><a href="0004-evidenz-review.html">← Evidenz</a> · <a href="../index.html">Kursübersicht →</a></footer></main></body></html>

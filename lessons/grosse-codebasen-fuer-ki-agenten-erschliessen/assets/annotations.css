@@ -217,7 +217,7 @@ mark.ann-highlight.ann-active {
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
-  color: #999;
+  color: #6b6b66;
   padding: 0;
   width: 20px;
   height: 20px;
@@ -240,7 +240,7 @@ mark.ann-highlight.ann-active {
 .ann-popover-hint {
   padding: 0 12px 4px;
   font-size: 11px;
-  color: #999;
+  color: #6b6b66;
   font-family: -apple-system, sans-serif;
 }
 .ann-popover-actions {
@@ -336,7 +336,7 @@ mark.ann-highlight.ann-active {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #999;
+  color: #6b6b66;
   line-height: 1;
 }
 .ann-list-close:hover { color: var(--ann-danger); }
@@ -346,17 +346,24 @@ mark.ann-highlight.ann-active {
   padding: 12px 20px;
 }
 .ann-list-empty {
-  color: #888;
+  color: #6b6b66;
   font-style: italic;
   text-align: center;
   margin-top: 40px;
 }
 .ann-list-item {
+  display: block;
+  width: 100%;
   padding: 12px 0;
+  border: none;
   border-bottom: 1px solid #f0ece4;
+  background: none;
+  font: inherit;
+  text-align: left;
   cursor: pointer;
 }
 .ann-list-item:hover { background: #fffef5; }
+.ann-list-item:focus-visible { outline: 3px solid var(--ann-signal); outline-offset: -3px; }
 .ann-list-item:last-child { border-bottom: none; }
 .ann-list-n {
   font-size: 11px;
@@ -385,6 +392,7 @@ mark.ann-highlight.ann-active {
   color: #555;
 }
 .ann-list-quote {
+  display: block;
   font-style: italic;
   font-size: 13px;
   color: #666;
@@ -394,6 +402,7 @@ mark.ann-highlight.ann-active {
   padding-left: 10px;
 }
 .ann-list-comment {
+  display: block;
   font-size: 14px;
   color: #1a1a1a;
   line-height: 1.5;
@@ -402,8 +411,9 @@ mark.ann-highlight.ann-active {
   word-wrap: break-word;
 }
 .ann-list-meta {
+  display: block;
   font-size: 11px;
-  color: #999;
+  color: #6b6b66;
 }
 
 /* ─── Print ─────────────────────────────────────────────────────────── */

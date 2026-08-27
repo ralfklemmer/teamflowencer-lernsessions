@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "package": "pi-repo-map-extension",
+  "repository_url": "https://github.com/ralfklemmer/pi-repo-map-extension",
+  "commit_sha": "7ceeb5ec466a24a811f0a1c4b7482855fc7d3521",
+  "tag": "v1.0.0",
+  "license": "Apache-2.0",
+  "install": "pi install git:https://github.com/ralfklemmer/pi-repo-map-extension@7ceeb5ec466a24a811f0a1c4b7482855fc7d3521",
+  "verified_on": "2026-08-26",
+  "verification": {
+    "origin": "https://github.com/ralfklemmer/pi-repo-map-extension.git",
+    "tag_object": "5ee668475876dfbde2cbe32f977dcb49c9f8e46f",
+    "tag_points_at": "7ceeb5ec466a24a811f0a1c4b7482855fc7d3521",
+    "remote_main": "7ceeb5ec466a24a811f0a1c4b7482855fc7d3521"
+  }
+}
