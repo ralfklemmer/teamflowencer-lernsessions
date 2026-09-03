@@ -154,6 +154,9 @@
   border-radius: 4px;
   filter: saturate(.7);
 }
+.video-card.is-live img { filter: none; }
+.video-card.is-live a > img { transition: filter .15s ease; }
+.video-card.is-live a:hover > img { filter: saturate(1.1); }
 .video-card h2 { margin-top: 0; color: var(--ink); }
 .status-label {
   display: inline-block;
