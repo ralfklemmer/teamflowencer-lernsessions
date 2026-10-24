@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Glossar · oMLX und Splash</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="ref-0001-glossar" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a aria-current="page" href="0001-glossar.html">Glossar</a><a href="0002-spickzettel.html">Spickzettel</a><a href="0003-fehlerdiagnose.html">Fehlerdiagnose</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Referenz</p>
+    <h1 class="lesson-title">Glossar</h1>
+    <p class="lesson-sub">Jeder Begriff aus dem Tutorial in ein bis zwei Sätzen. In Klammern: das Bild aus Kapitel 01 oder der Name in der oMLX-Oberfläche.</p>
+  </header>
+
+  <h2>Rund um den Mac</h2>
+  <dl class="glossary">
+    <dt>Terminal</dt><dd>Vorinstallierte Mac-App, in der du Befehle als Text eingibst statt zu klicken.</dd>
+    <dt>Befehl</dt><dd>Eine Textzeile wie <code>splash --version</code>, die du im Terminal mit <kbd>Enter</kbd> ausführst.</dd>
+    <dt>Eingabeaufforderung (Prompt)</dt><dd>Die Zeile mit <code>%</code> am Ende. Sie zeigt: Das Terminal wartet auf deinen nächsten Befehl.</dd>
+    <dt><code>~</code> (Tilde)</dt><dd>Kurzschreibweise für deinen Benutzerordner, zum Beispiel <code>/Users/anna</code>.</dd>
+    <dt>Homebrew</dt><dd>Paketmanager für den Mac: installiert und aktualisiert Programme per Befehl. <em>Vermeiden:</em> „brew-App“.</dd>
+    <dt>Tap</dt><dd>Eine zusätzliche Paketquelle für Homebrew, etwa <code>incoai/tap</code> von Inco AI.</dd>
+    <dt>Arbeitsspeicher (Unified Memory)</dt><dd>Der Speicher, den Chip und Grafik gemeinsam nutzen. Er bestimmt, wie große Modelle auf deinen Mac passen.</dd>
+  </dl>
+
+  <h2>Rund um KI-Modelle</h2>
+  <dl class="glossary">
+    <dt>Sprachmodell</dt><dd>Ein KI-Programm, das Text Stück für Stück fortsetzt und so Antworten schreibt.</dd>
+    <dt>Token</dt><dd>Das kleinste Stück, das ein Sprachmodell erzeugt – ungefähr ein Wortteil.</dd>
+    <dt>tok/s (Tokens pro Sekunde)</dt><dd>Wie viele Tokens pro Sekunde entstehen. Im Dashboard: <span class="ui">TG TPS</span>. Mehr ist besser.</dd>
+    <dt>TTFT (Time to First Token)</dt><dd>Wartezeit vom Absenden bis zum ersten Token, im Dashboard in Millisekunden. Weniger ist besser.</dd>
+    <dt>Kontext</dt><dd>Alles, was das Modell bei einer Anfrage liest: deine Frage, der bisherige Chat, eingefügte Dateien. Gemessen in Tokens, zum Beispiel 32K = rund 32.000.</dd>
+    <dt>Hugging Face</dt><dd>Die größte Plattform für frei verfügbare KI-Modelle. Jedes Modell hat eine <strong>Repository-ID</strong> der Form <code>Anbieter/Modellname</code>.</dd>
+    <dt>Quantisierung (4 Bit)</dt><dd>Verkleinerung eines Modells, damit es in weniger Speicher passt. <code>oQ4e</code> im Namen steht für eine 4-Bit-Variante von oMLX.</dd>
+  </dl>
+
+  <h2>oMLX und Splash</h2>
+  <dl class="glossary">
+    <dt>oMLX</dt><dd>Kostenlose Mac-App mit Server unter <code>localhost:8000</code>, die lokale Sprachmodelle lädt, verwaltet und ausführt. (Steuerzentrale)</dd>
+    <dt>MLX</dt><dd>Apples Rechenbibliothek für Apple-Chips. oMLX bringt sie mit; du installierst sie nicht separat.</dd>
+    <dt>Engine (Motor)</dt><dd>Der Programmteil, der ein Modell tatsächlich rechnen lässt. oMLX hat einen eingebauten MLX-Motor.</dd>
+    <dt>Splash</dt><dd>Eigenständige Engine von Inco AI, die oMLX für bestimmte Modelle statt des eingebauten Motors nutzen kann. (zweiter Motor)</dd>
+    <dt>Externe Engine</dt><dd>Der oMLX-Schalter, mit dem ein Modell über Splash läuft. Im Dashboard: <span class="ui">Use external engine</span>. oMLX startet Splash dann selbst im Hintergrund.</dd>
+    <dt>Zielmodell</dt><dd>Das große Modell, das die Antwort verantwortet, hier <code>Jundot/Qwen3.8-27B-oQ4e-mtp</code>. (Lektorin)</dd>
+    <dt>Draft (DFlash2)</dt><dd>Kleines Zusatzmodell, das Tokens vorrät, hier <code>incoai/Qwen3.8-27B-DFlash2</code>. (Assistent)</dd>
+    <dt>Speculative Decoding</dt><dd>Verfahren, bei dem ein Draft mehrere Tokens vorrät und das Zielmodell sie in einem Durchgang prüft. Gleiche Antwort, schneller.</dd>
+    <dt>MTP (Multi-Token-Prediction)</dt><dd>oMLX’ eigenes Vorrat-Verfahren ohne Splash. Es ist die Baseline, gegen die Splash antritt.</dd>
+    <dt>Splash-Komplettpaket</dt><dd>Pakete wie <code>incoai/Qwen3.8-27B-Splash</code>, gedacht für Splash ohne oMLX. oMLX kann sie nicht nutzen.</dd>
+    <dt>Baseline</dt><dd>Der Messwert ohne Splash, mit dem du die Messung mit Splash vergleichst.</dd>
+    <dt>API-Key</dt><dd>Dein selbst gewähltes Passwort für oMLX. Schützt den Server und ist der Login fürs Web-Dashboard.</dd>
+    <dt>Web-Dashboard</dt><dd>Die Oberfläche von oMLX im Browser unter <code>http://localhost:8000/admin</code>.</dd>
+  </dl>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere einen Begriff und notiere als Kommentar, was dir daran noch unklar ist.</li><li>Öffne deinen eigenen KI-Agenten und gib ihm diese Seite als Kontext: Lass ihn die HTML-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><div class="next"><a href="../index.html">← Zurück zur Übersicht</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>

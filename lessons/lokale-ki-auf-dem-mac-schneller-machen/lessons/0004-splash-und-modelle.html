@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>04 · Splash installieren und die richtigen Modelle laden</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="0004-splash-und-modelle" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a href="0001-was-splash-bringt.html">01 Verstehen</a><a href="0002-terminal-und-homebrew.html">02 Terminal</a><a href="0003-omlx-einrichten.html">03 oMLX</a><a aria-current="page" href="0004-splash-und-modelle.html">04 Splash</a><a href="0005-einschalten-und-messen.html">05 Messen</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Kapitel 04 · Installation, Teil 2</p>
+    <h1 class="lesson-title">Splash installieren und die richtigen Modelle laden</h1>
+    <p class="lesson-sub">Ein Befehl im Terminal für Splash, zwei Downloads im Dashboard – und ein Fehler, den du dir sparen kannst.</p>
+    <div class="lesson-meta"><span>15 Minuten Arbeit</span><span>plus ca. 30 Minuten Download</span><span>ca. 21 GB Speicherplatz</span></div>
+  </header>
+
+  <div class="callout learning-objective"><p class="callout-title">Dein Ergebnis</p><p>Splash ist installiert und oMLX findet es. Im Modell-Manager von oMLX stehen das <strong>Zielmodell</strong> Qwen3.8-27B und sein <strong>Draft</strong> DFlash2.</p></div>
+
+  <h2>Schritt 1 · Splash installieren</h2>
+  <ol class="steps">
+    <li>Öffne das Terminal (<kbd>⌘ Cmd</kbd> + <kbd>Leertaste</kbd>, <code>Terminal</code>, <kbd>Enter</kbd>) und führe aus:
+      <pre class="cmd"><code>brew install incoai/tap/splash</code></pre>
+      <span class="expect">Homebrew lädt Splash aus der Paketquelle von Inco AI (rund 250 MB). Am Ende erscheint wieder <code>%</code>.</span></li>
+    <li>Prüfe die Version:
+      <pre class="cmd"><code>splash --version</code></pre>
+      <span class="expect">eine Zeile wie <code>Splash 1.4.0</code>. Du brauchst mindestens <strong>1.3.0</strong>. Getestet wurde dieses Tutorial mit 1.3.2.</span></li>
+  </ol>
+  <p>Was ist da eben passiert? <code>brew install</code> heißt „installiere“. <code>incoai/tap/splash</code> ist die Adresse: Paket <code>splash</code> aus der Homebrew-Paketquelle (<em>Tap</em>) der Firma Inco AI.</p>
+  <div class="callout warning"><p class="callout-title">Fehlermeldung zur macOS-Version oder zum Chip?</p><p>Splash verlangt einen Mac mit M3 oder neuer und macOS 26 oder neuer. Für M1/M2 gibt es einen Community-Nachbau namens <code>splash-m1</code>, der hier nicht getestet wurde – siehe <a href="../reference/0003-fehlerdiagnose.html">Fehlerdiagnose</a>.</p></div>
+
+  <h2>Schritt 2 · oMLX neu starten und Splash finden lassen</h2>
+  <p>oMLX sucht beim Start nach Splash. Weil Splash eben erst dazukam, startest du oMLX einmal neu.</p>
+  <ol class="steps">
+    <li>Klicke in der Menüleiste auf das oMLX-Symbol → <span class="ui">Quit oMLX</span>.</li>
+    <li>Öffne oMLX wieder aus dem Ordner <span class="ui">Programme</span>. Startet der Server nicht von selbst, klicke im Menüleisten-Symbol auf <span class="ui">Start Server</span>.</li>
+    <li>Öffne das Dashboard (<span class="ui">Open Web Dashboard</span>) und gehe zu <span class="ui">Settings → Integration Settings</span>. Scrolle zum Abschnitt <span class="ui">External engines</span>.
+      <span class="expect">einen Eintrag <strong>Splash</strong> mit dem Hinweis „Found automatically.“</span></li>
+  </ol>
+
+  <h2>Schritt 3 · Verstehen, was du herunterlädst</h2>
+  <p>Erinnere dich an Kapitel 01: Splash braucht <strong>zwei</strong> Modelle – die Lektorin und den Assistenten. Auf der Modell-Plattform Hugging Face liegen sie in zwei getrennten Paketen (<em>Repositories</em>):</p>
+  <table>
+    <thead><tr><th>Rolle</th><th>Repository-ID</th><th>Größe</th></tr></thead>
+    <tbody>
+      <tr><td>Zielmodell</td><td><code>Jundot/Qwen3.8-27B-oQ4e-mtp</code></td><td>16,6 GB</td></tr>
+      <tr><td>Draft (DFlash2)</td><td><code>incoai/Qwen3.8-27B-DFlash2</code></td><td>3,8 GB</td></tr>
+    </tbody>
+  </table>
+  <p>Warum gerade das 27B-Modell? Weil Splash dort in der Messung 1,4- bis 1,7-mal schneller war. Mit Splash braucht es bei 32.000 Tokens Kontext etwa 22 GB Arbeitsspeicher.</p>
+
+  <div class="callout warning"><p class="callout-title">Der teure Fehler: das Splash-Komplettpaket</p><p>Auf Hugging Face gibt es auch Pakete wie <code>incoai/Qwen3.8-27B-Splash</code> (17–20 GB). Die klingen genau richtig, sind aber <strong>nur für Splash ohne oMLX</strong> gedacht. oMLX kann sie nicht lesen – das Modell bleibt unsichtbar. Genau dieser Fehler ist beim Einrichten für das Video passiert: 17 GB umsonst heruntergeladen. Lade also <strong>nicht</strong> das Paket mit <code>-Splash</code> am Ende, sondern die beiden aus der Tabelle oben.</p></div>
+
+  <h2>Schritt 4 · Beide Modelle im Dashboard herunterladen</h2>
+  <ol class="steps">
+    <li>Gehe im Dashboard zu <span class="ui">Models → Downloader</span>.
+      <span class="expect">„Model Downloader“ mit einem Feld <span class="ui">Repository ID</span> im Abschnitt „Download from HuggingFace“.</span></li>
+    <li>Kopiere die ID des Zielmodells, füge sie in <span class="ui">Repository ID</span> ein und klicke <span class="ui">Download</span>:
+      <pre class="cmd"><code>Jundot/Qwen3.8-27B-oQ4e-mtp</code></pre>
+      Das Feld <span class="ui">HF Token</span> bleibt leer – es ist optional.
+      <span class="expect">einen Fortschrittsbalken. Bei 100 Mbit/s dauern die 16,6 GB rund 25 Minuten.</span></li>
+    <li>Wiederhole das für den Draft:
+      <pre class="cmd"><code>incoai/Qwen3.8-27B-DFlash2</code></pre></li>
+    <li>Warte, bis beide Downloads fertig sind. Du kannst das Browserfenster offen lassen und nebenbei arbeiten.</li>
+  </ol>
+  <div class="callout"><p class="callout-title">In neueren oMLX-Versionen</p><p>Laut oMLX-Anleitung gibt es in neueren Versionen unter <span class="ui">Model Settings → Advanced</span> einen eigenen Download-Knopf für den passenden Draft, und der Downloader lehnt die <code>-Splash</code>-Komplettpakete von selbst ab. Siehst du den Knopf, kannst du ihn statt des Draft-Downloads oben verwenden.</p></div>
+
+  <h2>Schritt 5 · oMLX die Modelle neu einlesen lassen</h2>
+  <ol class="steps">
+    <li>Gehe zu <span class="ui">Models → Manager</span>.</li>
+    <li>Klicke auf <span class="ui">Reload</span>. Achtung: Das entlädt alle gerade geladenen Modelle. Mach das nicht mitten in einem Chat.
+      <span class="expect">kurz „Reloading…“, danach in der Liste <code>Qwen3.8-27B-oQ4e-mtp</code> und <code>Qwen3.8-27B-DFlash2</code>.</span></li>
+  </ol>
+  <p>Der Draft wird als Hilfsmodell geführt. Er taucht in der Liste auf, ist aber nicht zum Chatten gedacht.</p>
+
+  <details class="exercise">
+    <summary>Für Fortgeschrittene: Downloads im Terminal statt im Dashboard</summary>
+    <p>Mit der Hugging-Face-Kommandozeile <code>hf</code> geht es auch im Terminal. Installieren mit <code>brew install hf</code>. Den richtigen Zielordner findest du in <code>~/.omlx/settings.json</code> unter <code>model_dirs</code>; der Downloader im Dashboard nimmt dir genau diese Entscheidung ab. Mit dem Standardordner sehen die Befehle so aus:</p>
+    <pre><code>hf download Jundot/Qwen3.8-27B-oQ4e-mtp --local-dir ~/.omlx/models/Jundot/Qwen3.8-27B-oQ4e-mtp
+hf download incoai/Qwen3.8-27B-DFlash2 --local-dir ~/.omlx/models/incoai/Qwen3.8-27B-DFlash2</code></pre>
+    <p>Danach trotzdem <span class="ui">Models → Manager → Reload</span>.</p>
+  </details>
+
+  <h2>Erwartete Beobachtungen</h2>
+  <ul class="checklist">
+    <li><label><input type="checkbox"><code>splash --version</code> zeigt 1.3.0 oder neuer.</label></li>
+    <li><label><input type="checkbox">Unter <span class="ui">Settings → Integration Settings → External engines</span> steht Splash als gefunden.</label></li>
+    <li><label><input type="checkbox">Zielmodell und Draft stehen im <span class="ui">Model Manager</span>.</label></li>
+    <li><label><input type="checkbox">Ich habe kein Paket mit <code>-Splash</code> am Ende geladen.</label></li>
+  </ul>
+
+  <h2>Teste dich</h2>
+  <div class="quiz"><p class="quiz-prompt">1. Welche beiden Pakete braucht oMLX für Splash mit dem 27B-Modell?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-feedback="Das Komplettpaket ist nur für Splash ohne oMLX. oMLX kann es nicht lesen.">Komplettpaket <code>-Splash</code> und dazu Draft.</button>
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. Zwei getrennte Pakete: Lektorin und Assistent.">Zielmodell <code>-oQ4e-mtp</code> und Draft <code>-DFlash2</code>.</button>
+    <button class="quiz-option" type="button" data-feedback="Ohne Draft gibt es nichts, was vorrät – oMLX graut den Schalter dann aus.">Nur das Zielmodell, sonst nichts.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <div class="quiz"><p class="quiz-prompt">2. Du hast Splash gerade installiert, aber oMLX zeigt es unter „External engines“ nicht. Was zuerst?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. oMLX sucht beim Start nach Splash.">oMLX beenden und wieder starten.</button>
+    <button class="quiz-option" type="button" data-feedback="Modelle haben mit dem Finden von Splash nichts zu tun.">Die Modelle noch einmal laden.</button>
+    <button class="quiz-option" type="button" data-feedback="Homebrew war erfolgreich, wenn splash --version funktioniert.">Homebrew noch einmal komplett installieren.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <div class="quiz"><p class="quiz-prompt">3. Aus Kapitel 01: Warum ist ein Draft überhaupt nötig?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-feedback="Die Antwort schreibt und prüft das Zielmodell. Der Draft macht nur Vorschläge.">Er ersetzt das große Zielmodell.</button>
+    <button class="quiz-option" type="button" data-feedback="Speicher spart er nicht – er kostet sogar zusätzlich etwas.">Er spart Arbeitsspeicher auf Macs.</button>
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. Er rät Tokens vor, das Zielmodell prüft sie in einem Durchgang.">Er rät Tokens vor, schneller.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <h2>Primärquelle</h2>
+  <p>Die <a href="https://github.com/jundot/omlx/blob/main/docs/Splash.md">Splash-Anleitung von oMLX</a> nennt Launcher-Suche, passende Drafts und den Hinweis, dass die <code>incoai/*-Splash</code>-Pakete nicht unterstützt werden.</p>
+
+  <p class="source-note"><a href="https://github.com/incoai/splash">Splash auf GitHub</a> · <a href="https://huggingface.co/incoai/Qwen3.8-27B-DFlash2">Draft auf Hugging Face</a> · <a href="https://huggingface.co/Jundot/Qwen3.8-27B-oQ4e-mtp">Zielmodell auf Hugging Face</a></p>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine relevante Stelle und notiere deine Frage, deinen Einwand oder deinen Praxisfall als Kommentar – zum Beispiel, welches Modell zu deinem Arbeitsspeicher passt.</li><li>Öffne deinen eigenen KI-Agenten (zum Beispiel ChatGPT, Claude oder den Chat in oMLX) und gib ihm diese Seite als Kontext: Lass ihn die Lesson-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><button class="lesson-complete" type="button">Lesson als abgeschlossen markieren</button><div class="next"><strong>Nächster Schritt:</strong> <a href="0005-einschalten-und-messen.html">Splash einschalten und selbst messen →</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>

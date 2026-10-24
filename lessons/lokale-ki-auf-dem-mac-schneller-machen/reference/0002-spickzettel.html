@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Spickzettel · oMLX und Splash</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="ref-0002-spickzettel" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a href="0001-glossar.html">Glossar</a><a aria-current="page" href="0002-spickzettel.html">Spickzettel</a><a href="0003-fehlerdiagnose.html">Fehlerdiagnose</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Referenz</p>
+    <h1 class="lesson-title">Spickzettel: oMLX mit Splash</h1>
+    <p class="lesson-sub">Das komplette Setup auf einer Seite – zum Ausdrucken oder für den zweiten Mac.</p>
+    <div class="lesson-meta"><span>geprüft mit oMLX 0.7.1rc1 und Splash 1.3.2</span><span>Stand 24.10.2026</span></div>
+  </header>
+
+  <h2>Voraussetzungen</h2>
+  <table>
+    <tbody>
+      <tr><td>Chip</td><td>M3 oder neuer <span class="prompt-sign">(M1/M2: nur Community-Build <code>splash-m1</code>, ungetestet)</span></td></tr>
+      <tr><td>macOS</td><td>26.4 oder neuer</td></tr>
+      <tr><td>Arbeitsspeicher</td><td>mindestens 36 GB, empfohlen 48 GB</td></tr>
+      <tr><td>Speicherplatz</td><td>ca. 25 GB für Qwen3.8-27B + Draft</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Die sechs Schritte</h2>
+  <table>
+    <thead><tr><th>#</th><th>Was</th><th>Wie</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Homebrew</td><td><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code>, danach die angezeigten „Next steps“ ausführen</td></tr>
+      <tr><td>2</td><td>oMLX</td><td><code>oMLX-&lt;Version&gt;-macos26-27.dmg</code> von github.com/jundot/omlx/releases → in Programme ziehen → <span class="ui">Get Started</span> → API-Key → <span class="ui">Start Server</span> → <span class="ui">Open Web Dashboard</span></td></tr>
+      <tr><td>3</td><td>Splash</td><td><code>brew install incoai/tap/splash</code>, prüfen mit <code>splash --version</code> (≥ 1.3.0), oMLX neu starten</td></tr>
+      <tr><td>4</td><td>Modelle</td><td><span class="ui">Models → Downloader → Repository ID</span>: <code>Jundot/Qwen3.8-27B-oQ4e-mtp</code> und <code>incoai/Qwen3.8-27B-DFlash2</code>. <strong>Nicht</strong> <code>…-Splash</code>.</td></tr>
+      <tr><td>5</td><td>Einlesen</td><td><span class="ui">Models → Manager → Reload</span> (entlädt alle Modelle)</td></tr>
+      <tr><td>6</td><td>Einschalten</td><td><span class="ui">Models → Manager</span> → Einstellungs-Symbol → <span class="ui">Advanced Settings → Use external engine</span> → Engine <strong>Splash</strong> → <span class="ui">Save</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Prüfen</h2>
+  <pre><code>sw_vers -productVersion                  # macOS-Version, ≥ 26.4
+sysctl -n machdep.cpu.brand_string       # Chip, M3 oder neuer
+brew --version                           # Homebrew vorhanden
+splash --version                         # Splash ≥ 1.3.0
+curl -s http://localhost:8000/health     # oMLX läuft: {"status":"healthy" …
+tail -f ~/.omlx/logs/splash/*.log        # Splash live zusehen, Ende mit ctrl+C</code></pre>
+  <p>Im Dashboard: <span class="ui">Settings → Integration Settings → External engines</span> zeigt Splash mit „Found automatically.“</p>
+
+  <h2>Messen und entscheiden</h2>
+  <ol>
+    <li><span class="ui">Bench</span> → Modell wählen → <span class="ui">Benchmark Context: Code (Mixed)</span> → <span class="ui">Run Benchmark</span>, Splash <strong>aus</strong>.</li>
+    <li>Splash einschalten, gleiche Messung wiederholen.</li>
+    <li>Zeile <code>pp1024/tg128</code> vergleichen: <span class="ui">TG TPS</span> und <span class="ui">TTFT (ms)</span>.</li>
+  </ol>
+  <div class="callout success"><p class="callout-title">Entscheidungsregel</p><p>Splash an, wenn <strong>≥ 15 % mehr TG TPS</strong> und <strong>TTFT nicht schlechter</strong>. Sonst oMLX allein.</p></div>
+
+  <h2>Die beiden Modelle</h2>
+  <table>
+    <thead><tr><th></th><th>Qwen3.8-27B</th><th>Qwen3.6-35B-A3B</th></tr></thead>
+    <tbody>
+      <tr><td>Zielmodell</td><td><code>Jundot/Qwen3.8-27B-oQ4e-mtp</code> (16,6 GB)</td><td><code>Jundot/Qwen3.6-35B-A3B-oQ4e-mtp</code> (21,1 GB)</td></tr>
+      <tr><td>Draft</td><td><code>incoai/Qwen3.8-27B-DFlash2</code> (3,8 GB)</td><td><code>incoai/Qwen3.6-35B-A3B-DFlash2</code> (1,0 GB)</td></tr>
+      <tr><td>Speicher mit Splash, 32K Kontext</td><td>≈ 22 GB</td><td>≈ 25 GB</td></tr>
+      <tr><td>Gemessen (M5 Max)</td><td>1,38–1,73× schneller</td><td>0,71–1,29×</td></tr>
+      <tr><td>Empfehlung</td><td><strong>Splash an</strong></td><td><strong>oMLX allein</strong>, außer deine Messung sagt anderes</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Referenzwerte (M5 Max, 128 GB, 17.10.2026)</h2>
+  <table>
+    <thead><tr><th>Modell</th><th>Aufgabe</th><th>oMLX</th><th>Splash</th><th>Faktor</th><th>TTFT oMLX → Splash</th></tr></thead>
+    <tbody>
+      <tr><td>27B</td><td>Code</td><td>72,5</td><td>114,4</td><td>1,58×</td><td>146 → 58 ms</td></tr>
+      <tr><td>27B</td><td>freier Text</td><td>53,0</td><td>73,3</td><td>1,38×</td><td>203 → 145 ms</td></tr>
+      <tr><td>27B</td><td>Übersetzen</td><td>69,2</td><td>119,6</td><td>1,73×</td><td>227 → 313 ms</td></tr>
+      <tr><td>35B-A3B</td><td>Code</td><td>224,3</td><td>217,8</td><td>0,97×</td><td>47 → 25 ms</td></tr>
+      <tr><td>35B-A3B</td><td>freier Text</td><td>196,4</td><td>140,2</td><td>0,71×</td><td>46 → 42 ms</td></tr>
+      <tr><td>35B-A3B</td><td>Übersetzen</td><td>208,4</td><td>268,0</td><td>1,29×</td><td>49 → 67 ms</td></tr>
+    </tbody>
+  </table>
+  <p class="source-note">Eigene Messung, Median aus 3 Läufen, bis 512 Tokens, Reasoning aus. Werte in tok/s.</p>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine Zeile und notiere als Kommentar deine Frage oder deinen eigenen Messwert.</li><li>Öffne deinen eigenen KI-Agenten und gib ihm diese Seite als Kontext: Lass ihn die HTML-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><div class="next"><a href="../index.html">← Zurück zur Übersicht</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>

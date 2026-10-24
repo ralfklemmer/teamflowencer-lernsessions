@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>01 · Was Splash bringt – und wann nicht</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="0001-was-splash-bringt" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a aria-current="page" href="0001-was-splash-bringt.html">01 Verstehen</a><a href="0002-terminal-und-homebrew.html">02 Terminal</a><a href="0003-omlx-einrichten.html">03 oMLX</a><a href="0004-splash-und-modelle.html">04 Splash</a><a href="0005-einschalten-und-messen.html">05 Messen</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Kapitel 01 · Verstehen</p>
+    <h1 class="lesson-title">Was Splash bringt – und wann nicht</h1>
+    <p class="lesson-sub">Bevor du etwas installierst: Was passiert eigentlich, wenn ein Sprachmodell auf deinem Mac antwortet – und an welcher Stelle setzt Splash an?</p>
+    <div class="lesson-meta"><span>10 Minuten</span><span>nur lesen</span><span>kein Vorwissen nötig</span></div>
+  </header>
+
+  <div class="callout learning-objective"><p class="callout-title">Dein Ergebnis</p><p>Du kannst in zwei Sätzen erklären, was oMLX ist, was Splash zusätzlich tut und warum du vor dem Einschalten messen solltest.</p></div>
+
+  <h2>Ein Sprachmodell schreibt Stück für Stück</h2>
+  <p>Ein KI-Sprachmodell schreibt seine Antwort nicht auf einen Schlag. Es erzeugt sie in kleinen Stücken, den <strong>Tokens</strong>. Ein Token ist ungefähr ein Wortteil – „Haustür“ kann zum Beispiel aus zwei oder drei Tokens bestehen.</p>
+  <p>Wie schnell das geht, misst man in <strong>Tokens pro Sekunde</strong> (kurz <strong>tok/s</strong>). Bei 20 tok/s liest du schneller, als der Text erscheint. Bei 100 tok/s ist ein ganzer Absatz in einer Sekunde da. Das merkst du besonders, wenn ein KI-Agent viele Schritte hintereinander macht: Jede Sekunde Wartezeit addiert sich.</p>
+
+  <h2>oMLX: die Steuerzentrale</h2>
+  <p><strong>oMLX</strong> ist eine kostenlose Mac-App. Sie lädt Sprachmodelle herunter, hält sie im Arbeitsspeicher und beantwortet Anfragen – komplett auf deinem Mac. Andere Programme sprechen mit oMLX über die Adresse <code>http://localhost:8000</code>. „localhost“ heißt: dieser Computer, nicht das Internet.</p>
+  <p>Damit ein Modell rechnet, braucht oMLX einen <strong>Motor</strong> (Fachbegriff: Inferenz-Engine). Eingebaut ist ein Motor auf Basis von <strong>MLX</strong>, Apples Rechenbibliothek für Apple-Chips.</p>
+
+  <h2>Splash: ein zweiter Motor</h2>
+  <p><strong>Splash</strong> ist ein eigenständiger Motor der Firma Inco AI. oMLX kann ihn als <strong>externe Engine</strong> nutzen. Das heißt: Für ein bestimmtes Modell legst du in oMLX einen Schalter um. Ab dann startet oMLX im Hintergrund Splash und reicht die Anfragen weiter. Für dich und deine Programme ändert sich nichts – die Adresse bleibt <code>localhost:8000</code>.</p>
+  <div class="diagram">dein Chat oder Programm ──► oMLX (localhost:8000) ──┬──► MLX-Motor (Standard)
+                                                      └──► Splash  (Schalter an)</div>
+  <p>Splash funktioniert nur für bestimmte Modelle. In diesem Tutorial geht es um die beiden Modelle, die gemessen wurden: <strong>Qwen3.8-27B</strong> und <strong>Qwen3.6-35B-A3B</strong>.</p>
+
+  <h2>Der Trick: raten und prüfen</h2>
+  <p>Warum ist Splash schneller? Stell dir eine erfahrene Lektorin und einen flinken Assistenten vor. Der Assistent schreibt schnell die nächsten paar Wörter vor. Die Lektorin liest sie in einem Rutsch und sagt: „Die ersten vier stimmen, ab dem fünften schreibe ich selbst.“ Das ist schneller, als wenn sie jedes Wort einzeln selbst schreibt – und das Ergebnis ist trotzdem genau ihr Text.</p>
+  <table>
+    <thead><tr><th>Im Bild</th><th>Fachbegriff</th><th>Bei Splash</th></tr></thead>
+    <tbody>
+      <tr><td>Lektorin</td><td>Zielmodell</td><td>das große Modell, z. B. Qwen3.8-27B (16,6 GB)</td></tr>
+      <tr><td>Assistent</td><td>Draft (Rate-Modell)</td><td>ein kleines Zusatzmodell namens DFlash2 (3,8 GB beim 27B)</td></tr>
+      <tr><td>vorschreiben und prüfen</td><td>Speculative Decoding</td><td>Draft rät mehrere Tokens, Zielmodell prüft sie in einem Durchgang</td></tr>
+    </tbody>
+  </table>
+  <p>Wichtig: <strong>Die Antwort wird dadurch nicht schlechter.</strong> Das Zielmodell prüft jeden geratenen Token und verwirft falsche. Das Verfahren ist in der Forschung gut belegt (siehe Quelle unten).</p>
+  <div class="callout"><p class="callout-title">Und ohne Splash?</p><p>Auch oMLX rät bereits vor – mit einem eigenen Verfahren namens <strong>MTP</strong> (Multi-Token-Prediction). Splash tritt also nicht gegen „gar nichts“ an, sondern gegen einen schon recht schnellen Motor. Genau deshalb lohnt es sich nicht bei jedem Modell.</p></div>
+
+  <h2>Was gemessen wurde</h2>
+  <p>Auf einem MacBook mit M5 Max und 128 GB Arbeitsspeicher, kurze Aufgaben, jeweils Median aus drei Läufen:</p>
+  <table>
+    <thead><tr><th>Modell</th><th>Aufgabe</th><th>oMLX allein</th><th>mit Splash</th><th>Faktor</th></tr></thead>
+    <tbody>
+      <tr><td>Qwen3.8-27B</td><td>Code schreiben</td><td>72,5 tok/s</td><td>114,4 tok/s</td><td><strong>1,58×</strong></td></tr>
+      <tr><td>Qwen3.8-27B</td><td>freier Text</td><td>53,0 tok/s</td><td>73,3 tok/s</td><td><strong>1,38×</strong></td></tr>
+      <tr><td>Qwen3.8-27B</td><td>Übersetzen</td><td>69,2 tok/s</td><td>119,6 tok/s</td><td><strong>1,73×</strong></td></tr>
+      <tr><td>Qwen3.6-35B-A3B</td><td>Code schreiben</td><td>224,3 tok/s</td><td>217,8 tok/s</td><td>0,97×</td></tr>
+      <tr><td>Qwen3.6-35B-A3B</td><td>freier Text</td><td>196,4 tok/s</td><td>140,2 tok/s</td><td>0,71×</td></tr>
+      <tr><td>Qwen3.6-35B-A3B</td><td>Übersetzen</td><td>208,4 tok/s</td><td>268,0 tok/s</td><td>1,29×</td></tr>
+    </tbody>
+  </table>
+  <p>Die Lehre daraus: Beim <strong>27B-Modell</strong> lohnt sich Splash deutlich. Beim <strong>35B-A3B-Modell</strong> ist oMLX allein schon sehr schnell – Splash bringt kaum etwas, bei freiem Text ist es sogar langsamer. Je vorhersagbarer der Text (Code, Übersetzung), desto öfter rät der Draft richtig und desto mehr bringt Splash.</p>
+
+  <div class="callout warning"><p class="callout-title">Darum messen statt raten</p><p>Diese Zahlen stammen von einem einzigen Mac. Dein Chip, dein Arbeitsspeicher und deine Aufgaben sind anders. In Kapitel 05 misst du deshalb selbst – das dauert etwa 20 Minuten.</p></div>
+
+  <h2>Teste dich</h2>
+  <p>Beantworte die Fragen aus dem Gedächtnis, bevor du zurückscrollst. Genau dieses Abrufen sorgt dafür, dass es hängen bleibt.</p>
+
+  <div class="quiz"><p class="quiz-prompt">1. Was ändert sich für deinen Chat, wenn du Splash für ein Modell einschaltest?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-feedback="Nicht ganz. Die Adresse bleibt localhost:8000 – oMLX startet Splash selbst und reicht die Anfragen weiter.">Er muss eine neue Adresse verwenden.</button>
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. oMLX bleibt die Steuerzentrale, nur der Motor dahinter wechselt.">Nichts, er spricht weiter mit oMLX.</button>
+    <button class="quiz-option" type="button" data-feedback="Nein. Splash läuft lokal, genau wie oMLX. Es geht nichts ins Internet.">Er schickt Anfragen in die Cloud.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <div class="quiz"><p class="quiz-prompt">2. Warum wird die Antwort durch das Vorraten des Drafts nicht schlechter?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-feedback="Der Draft ist das kleine Modell und rät oft daneben. Gerade deshalb wird geprüft.">Weil der Draft fehlerfrei raten kann.</button>
+    <button class="quiz-option" type="button" data-feedback="Splash kürzt nichts. Es geht um die Geschwindigkeit, nicht um die Länge.">Weil Splash die Antworten kürzer macht.</button>
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. Falsch geratene Tokens verwirft das Zielmodell und schreibt dort selbst weiter.">Weil das Zielmodell jeden Vorschlag prüft.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <div class="quiz"><p class="quiz-prompt">3. Bei welchem Modell lohnte sich Splash in der Messung klar?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig: 1,38× bis 1,73×. Beim 35B-A3B ist der eingebaute Motor mit MTP schon sehr schnell.">Bei Qwen3.8-27B, bei allen drei Aufgaben.</button>
+    <button class="quiz-option" type="button" data-feedback="Beim 35B-A3B lag Splash bei freiem Text sogar deutlich hinten (0,71×).">Bei Qwen3.6-35B-A3B, bei allen drei Aufgaben.</button>
+    <button class="quiz-option" type="button" data-feedback="Die Faktoren unterscheiden sich stark zwischen den Modellen – genau deshalb wird gemessen.">Bei beiden Modellen etwa gleich stark.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <h2>Primärquelle</h2>
+  <p>Wenn du tiefer einsteigen willst: Die Idee „klein rät, groß prüft“ stammt aus dem Forschungsartikel <a href="https://arxiv.org/abs/2211.17192">Fast Inference from Transformers via Speculative Decoding</a> (Leviathan, Kalman, Matias, ICML 2023). Für die Praxis reicht die Anleitung des oMLX-Projekts: <a href="https://github.com/jundot/omlx/blob/main/docs/Splash.md">oMLX: Splash</a>.</p>
+
+  <p class="source-note"><a href="https://github.com/incoai/splash">Splash auf GitHub</a> · <a href="https://github.com/jundot/omlx">oMLX auf GitHub</a> · <a href="../reference/0001-glossar.html">Glossar</a></p>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine relevante Stelle und notiere deine Frage, deinen Einwand oder deinen Praxisfall als Kommentar.</li><li>Öffne deinen eigenen KI-Agenten (zum Beispiel ChatGPT, Claude oder später den Chat in oMLX) und gib ihm diese Seite als Kontext: Lass ihn die Lesson-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><button class="lesson-complete" type="button">Lesson als abgeschlossen markieren</button><div class="next"><strong>Nächster Schritt:</strong> <a href="0002-terminal-und-homebrew.html">Das Terminal kennenlernen und Homebrew installieren →</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>

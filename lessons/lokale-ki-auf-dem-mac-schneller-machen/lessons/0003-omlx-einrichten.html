@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>03 · oMLX installieren und starten</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="0003-omlx-einrichten" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a href="0001-was-splash-bringt.html">01 Verstehen</a><a href="0002-terminal-und-homebrew.html">02 Terminal</a><a aria-current="page" href="0003-omlx-einrichten.html">03 oMLX</a><a href="0004-splash-und-modelle.html">04 Splash</a><a href="0005-einschalten-und-messen.html">05 Messen</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Kapitel 03 · Installation, Teil 1</p>
+    <h1 class="lesson-title">oMLX installieren und starten</h1>
+    <p class="lesson-sub">oMLX ist eine ganz normale Mac-App. Du lädst sie herunter, ziehst sie in den Programme-Ordner und richtest sie in einem Willkommens-Dialog ein.</p>
+    <div class="lesson-meta"><span>10–15 Minuten</span><span>kein Terminal nötig</span><span>Browser</span></div>
+  </header>
+
+  <div class="callout learning-objective"><p class="callout-title">Dein Ergebnis</p><p>oMLX läuft, ist mit deinem eigenen <strong>API-Key</strong> geschützt, und du bist im <strong>Web-Dashboard</strong> angemeldet – der Oberfläche, über die du in Kapitel 04 und 05 alles einstellst.</p></div>
+
+  <div class="callout"><p class="callout-title">Gut zu wissen</p><p>Die Oberfläche von oMLX ist englisch. Klickpfade stehen deshalb wörtlich hier, zum Beispiel <span class="ui">Models → Downloader</span>. Die Erklärungen sind deutsch. Geprüft wurde mit oMLX 0.7.1rc1; neuere Versionen können kleine Abweichungen zeigen.</p></div>
+
+  <h2>1 · Die richtige Datei herunterladen</h2>
+  <ol class="steps">
+    <li>Öffne die Release-Seite von oMLX: <a href="https://github.com/jundot/omlx/releases">github.com/jundot/omlx/releases</a>.
+      <span class="expect">eine Liste von Versionen, die neueste oben.</span></li>
+    <li>Wähle die neueste <strong>stabile</strong> Version. Erkennbar daran, dass im Namen weder <code>dev</code> noch <code>rc</code> steht – zum Beispiel <code>0.7.2</code>. Versionen mit <code>dev</code> oder <code>rc</code> sind Vorabversionen für Tester.</li>
+    <li>Klappe bei dieser Version <span class="ui">Assets</span> auf und lade die Datei, die zu deinem macOS passt:
+      <table>
+        <thead><tr><th>Dein macOS</th><th>Datei endet auf</th></tr></thead>
+        <tbody>
+          <tr><td>26 oder 27 (nötig für Splash)</td><td><code>-macos26-27.dmg</code></td></tr>
+          <tr><td>15 Sequoia (nur oMLX, kein Splash)</td><td><code>-macos15-sequoia.dmg</code></td></tr>
+        </tbody>
+      </table>
+      <span class="expect">eine Datei wie <code>oMLX-0.7.2-macos26-27.dmg</code> in deinem Ordner <span class="ui">Downloads</span>.</span></li>
+  </ol>
+
+  <h2>2 · Installieren</h2>
+  <ol class="steps">
+    <li>Öffne den Ordner <span class="ui">Downloads</span> im Finder und doppelklicke auf die <code>.dmg</code>-Datei.
+      <span class="expect">ein Fenster mit dem oMLX-Symbol und einem Ordner <span class="ui">Applications</span> (Programme).</span></li>
+    <li>Ziehe das oMLX-Symbol mit der Maus auf den Ordner <span class="ui">Applications</span>.</li>
+    <li>Öffne <span class="ui">Programme</span> im Finder und doppelklicke auf <strong>oMLX</strong>.</li>
+  </ol>
+  <div class="callout warning"><p class="callout-title">macOS blockiert den Start?</p><p>Erscheint eine Meldung, dass die App nicht geöffnet werden kann, öffne <span class="ui">Systemeinstellungen → Datenschutz &amp; Sicherheit</span>, scrolle nach unten und klicke bei oMLX auf <span class="ui">Dennoch öffnen</span>. Das ist der Standardweg für Apps, die nicht aus dem App Store stammen.</p></div>
+
+  <h2>3 · Der Willkommens-Dialog</h2>
+  <p>Beim ersten Start begrüßt dich oMLX mit „Local AI, no more waiting.“</p>
+  <ol class="steps">
+    <li>Klicke auf <span class="ui">Get Started</span>.
+      <span class="expect">die Seite <strong>Local server</strong>: „Choose where models live, pick a port, and create the API key …“</span></li>
+    <li><strong>Ordner:</strong> Lass die Vorschläge stehen. oMLX legt in deinem Benutzerordner einen versteckten Ordner <code>.omlx</code> an – darin landen Einstellungen und Modelle.</li>
+    <li><strong>Port:</strong> Lass <code>8000</code> stehen. Der Port ist wie eine Zimmernummer: Programme auf deinem Mac finden oMLX unter <code>localhost:8000</code>.</li>
+    <li><strong>API-Key:</strong> Denk dir ein Passwort aus und trage es bei <span class="ui">Create an API key</span> ein. Regeln: mindestens 4 Zeichen, keine Leerzeichen, keine Umlaute. Nimm etwas Langes, zum Beispiel aus einem Passwort-Manager.
+      <span class="expect">der Hinweis „This key is also your Web Dashboard login password.“ – der Key ist also auch dein Login fürs Dashboard.</span></li>
+    <li>Klicke auf <span class="ui">Start Server</span>.
+      <span class="expect">kurz „Starting Server…“, dann „All set!“ und „Server started. Dashboard is ready.“</span></li>
+    <li>Klicke auf <span class="ui">Open Web Dashboard</span>.
+      <span class="expect">dein Browser öffnet eine Anmeldeseite. Trage deinen API-Key ein und melde dich an.</span></li>
+  </ol>
+  <div class="callout warning"><p class="callout-title">API-Key gut aufbewahren</p><p>Speichere den Key in deinem Passwort-Manager oder in der Schlüsselbundverwaltung. Du brauchst ihn für jede Anmeldung im Dashboard. Zeig ihn nicht in Screenshots oder Videos.</p></div>
+
+  <h2>4 · Wo oMLX wohnt</h2>
+  <p>oMLX hat kein großes Fenster. Es lebt als kleines Symbol oben rechts in der <strong>Menüleiste</strong>. Ein Klick darauf zeigt unter anderem:</p>
+  <table>
+    <thead><tr><th>Menüpunkt</th><th>Wofür</th></tr></thead>
+    <tbody>
+      <tr><td><span class="ui">Start Server</span> / <span class="ui">Stop Server</span></td><td>oMLX ein- und ausschalten</td></tr>
+      <tr><td><span class="ui">Open Web Dashboard</span></td><td>die Oberfläche im Browser öffnen</td></tr>
+      <tr><td><span class="ui">Settings…</span></td><td>App-Einstellungen, zum Beispiel automatischer Serverstart</td></tr>
+      <tr><td><span class="ui">Quit oMLX</span></td><td>oMLX ganz beenden</td></tr>
+    </tbody>
+  </table>
+  <p>Das Dashboard erreichst du jederzeit auch direkt im Browser: <code>http://localhost:8000/admin</code>.</p>
+
+  <h2>5 · Das Dashboard kennenlernen</h2>
+  <p>Oben im Dashboard findest du sechs Reiter. Für dieses Tutorial brauchst du vier davon:</p>
+  <table>
+    <thead><tr><th>Reiter</th><th>Was du dort tust</th><th>Kapitel</th></tr></thead>
+    <tbody>
+      <tr><td><span class="ui">Models</span></td><td>Modelle herunterladen (<span class="ui">Downloader</span>) und verwalten (<span class="ui">Manager</span>)</td><td>04</td></tr>
+      <tr><td><span class="ui">Settings</span></td><td>Splash als externe Engine finden lassen, Modell-Einstellungen</td><td>04, 05</td></tr>
+      <tr><td><span class="ui">Chat</span></td><td>mit einem Modell schreiben</td><td>05</td></tr>
+      <tr><td><span class="ui">Bench</span></td><td>Geschwindigkeit messen</td><td>05</td></tr>
+    </tbody>
+  </table>
+  <p>Auf der Startseite (<span class="ui">Dashboard</span>) erscheint vielleicht „New here? You don't have any models yet.“ mit Modell-Empfehlungen. Klicke auf <span class="ui">Not now</span>: Du lädst in Kapitel 04 gezielt die Modelle, die mit Splash funktionieren.</p>
+
+  <h2>Optional: Lebenszeichen im Terminal</h2>
+  <p>Wenn du dein neues Terminal-Wissen üben willst: Dieser Befehl fragt oMLX, ob es läuft. Er ändert nichts.</p>
+  <pre class="cmd"><code>curl -s http://localhost:8000/health</code></pre>
+  <p><span class="expect">eine Zeile, die mit <code>{"status":"healthy"</code> beginnt.</span></p>
+
+  <h2>Erwartete Beobachtungen</h2>
+  <ul class="checklist">
+    <li><label><input type="checkbox">oMLX liegt im Ordner Programme und zeigt ein Symbol in der Menüleiste.</label></li>
+    <li><label><input type="checkbox">Ich habe einen API-Key festgelegt und sicher gespeichert.</label></li>
+    <li><label><input type="checkbox">Ich bin unter <code>localhost:8000/admin</code> angemeldet und sehe die Reiter.</label></li>
+  </ul>
+
+  <h2>Teste dich</h2>
+  <div class="quiz"><p class="quiz-prompt">1. Was bedeutet <code>localhost:8000</code>?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-feedback="Nein. localhost heißt: dieser Computer. Nichts verlässt deinen Mac.">Eine Webseite von oMLX im Internet.</button>
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. localhost ist dein eigener Mac, 8000 die „Zimmernummer“ von oMLX.">oMLX auf deinem Mac, Port 8000.</button>
+    <button class="quiz-option" type="button" data-feedback="8000 ist eine Port-Nummer, keine Größenangabe.">Ein freier Speicherplatz von 8000 Megabyte.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <div class="quiz"><p class="quiz-prompt">2. Wofür brauchst du den API-Key?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. Er schützt oMLX und ist dein Login fürs Dashboard.">Als Login für das Web-Dashboard.</button>
+    <button class="quiz-option" type="button" data-feedback="Downloads funktionieren ohne Konto. Der Key gehört zu deinem lokalen oMLX.">Als Konto bei Hugging Face.</button>
+    <button class="quiz-option" type="button" data-feedback="oMLX ist kostenlos. Der Key ist ein selbst gewähltes Passwort.">Als Lizenzschlüssel zum Bezahlen.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <h2>Primärquelle</h2>
+  <p>Die offizielle <a href="https://github.com/jundot/omlx">README von oMLX</a> beschreibt Installation, Voraussetzungen und Dashboard.</p>
+
+  <p class="source-note"><a href="https://github.com/jundot/omlx/releases">oMLX Releases</a> · <a href="../reference/0002-spickzettel.html">Spickzettel</a> · <a href="../reference/0003-fehlerdiagnose.html">Fehlerdiagnose</a></p>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine relevante Stelle und notiere deine Frage, deinen Einwand oder deinen Praxisfall als Kommentar.</li><li>Öffne deinen eigenen KI-Agenten (zum Beispiel ChatGPT oder Claude) und gib ihm diese Seite als Kontext: Lass ihn die Lesson-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><button class="lesson-complete" type="button">Lesson als abgeschlossen markieren</button><div class="next"><strong>Nächster Schritt:</strong> <a href="0004-splash-und-modelle.html">Splash installieren und die richtigen Modelle laden →</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>

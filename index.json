@@ -2,6 +2,19 @@
   "schema_version": 2,
   "sessions": [
     {
+      "session_id": "04b0dc9a-ed1d-43e0-897c-40c997ed0431",
+      "slug": "lokale-ki-auf-dem-mac-schneller-machen",
+      "title": "Lokale KI auf dem Mac schneller machen – oMLX und Splash",
+      "topics": [
+        "Lokale KI",
+        "oMLX",
+        "Apple Silicon"
+      ],
+      "sort_order": 300,
+      "related_session_ids": [],
+      "related_youtube_urls": []
+    },
+    {
       "session_id": "0cf45253-c826-4fbf-8a8f-ce57aa8f77a7",
       "slug": "grosse-codebasen-fuer-ki-agenten-erschliessen",
       "title": "Große Codebasen für KI-Agenten erschließen",

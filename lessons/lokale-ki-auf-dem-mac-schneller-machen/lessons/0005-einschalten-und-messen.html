@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>05 · Splash einschalten und selbst messen</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="0005-einschalten-und-messen" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a href="0001-was-splash-bringt.html">01 Verstehen</a><a href="0002-terminal-und-homebrew.html">02 Terminal</a><a href="0003-omlx-einrichten.html">03 oMLX</a><a href="0004-splash-und-modelle.html">04 Splash</a><a aria-current="page" href="0005-einschalten-und-messen.html">05 Messen</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Kapitel 05 · Einschalten und entscheiden</p>
+    <h1 class="lesson-title">Splash einschalten und selbst messen</h1>
+    <p class="lesson-sub">Erst misst du oMLX allein, dann legst du den Schalter um und misst noch einmal. Am Ende entscheidet eine einfache Regel – nicht das Bauchgefühl.</p>
+    <div class="lesson-meta"><span>ca. 20–30 Minuten</span><span>nur Dashboard</span><span>Netzteil anschließen</span></div>
+  </header>
+
+  <div class="callout learning-objective"><p class="callout-title">Dein Ergebnis</p><p>Qwen3.8-27B antwortet über Splash. Du hast zwei Messungen – ohne und mit Splash – und weißt, ob du Splash auf deinem Mac eingeschaltet lässt.</p></div>
+
+  <h2>Warum zuerst ohne Splash messen?</h2>
+  <p>Ein Vergleich braucht einen Ausgangswert, die <strong>Baseline</strong>. Misst du nur mit Splash, weißt du nicht, ob es schneller ist. Deshalb die Reihenfolge: <strong>oMLX allein → Splash an → noch einmal messen → vergleichen.</strong></p>
+  <div class="callout"><p class="callout-title">Vorbereitung für saubere Zahlen</p><p>Netzteil anschließen, andere große Programme schließen (Videocall, Browser mit vielen Tabs, Spiele) und während der Messung nicht nebenbei arbeiten. Sonst misst du deinen Alltag mit.</p></div>
+
+  <h2>Die zwei Zahlen, auf die es ankommt</h2>
+  <table>
+    <thead><tr><th>Im Dashboard</th><th>Bedeutung</th><th>Spürst du als …</th></tr></thead>
+    <tbody>
+      <tr><td><span class="ui">TG TPS</span></td><td>Token Generation: Tokens pro Sekunde beim Schreiben der Antwort</td><td>wie schnell der Text fließt</td></tr>
+      <tr><td><span class="ui">TTFT (ms)</span></td><td>Time to First Token: Wartezeit bis zum ersten Wort, in Millisekunden</td><td>wie lange nach dem Absenden nichts passiert</td></tr>
+    </tbody>
+  </table>
+  <p>Bei TG TPS ist <strong>mehr besser</strong>, bei TTFT ist <strong>weniger besser</strong>.</p>
+
+  <h2>Messung 1 · oMLX allein</h2>
+  <ol class="steps">
+    <li>Öffne im Dashboard den Reiter <span class="ui">Bench</span>.
+      <span class="expect">„Performance Benchmark“ mit dem Hinweis, dass alle anderen Modelle vor der Messung entladen werden.</span></li>
+    <li>Wähle bei <span class="ui">Model</span> das Modell <code>Qwen3.8-27B-oQ4e-mtp</code>.</li>
+    <li>Wähle bei <span class="ui">Benchmark Context</span> den Inhalt <span class="ui">Code (Mixed)</span>. Unter <span class="ui">Single Request Tests</span> lässt du die Voreinstellung (1.024 und 4.096 Tokens) stehen. Die Antwortlänge ist fest auf 128 Tokens.</li>
+    <li>Klicke <span class="ui">Run Benchmark</span> und bestätige <span class="ui">Unload models and run</span>.
+      <span class="expect">ein Fortschritt, danach die Tabelle „Single Request Results“ mit Zeilen wie <code>pp1024/tg128</code>.</span></li>
+    <li>Notiere aus der Zeile <code>pp1024/tg128</code> die Werte <span class="ui">TG TPS</span> und <span class="ui">TTFT (ms)</span>. Tipp: Unter „Benchmark Results (Text — Copy &amp; Paste)“ kannst du mit <span class="ui">Copy</span> alles auf einmal kopieren, zum Beispiel in eine Notiz.</li>
+  </ol>
+
+  <h2>Splash einschalten</h2>
+  <ol class="steps">
+    <li>Gehe zu <span class="ui">Models → Manager</span>. Klicke in der Zeile <code>Qwen3.8-27B-oQ4e-mtp</code> auf das Einstellungs-Symbol (Tooltip „Model settings“).
+      <span class="expect">ein Dialog „Model Settings“ mit den Bereichen „Basic Settings“ und „Advanced Settings“.</span></li>
+    <li>Öffne <span class="ui">Advanced Settings</span> und schalte <span class="ui">Use external engine</span> ein.</li>
+    <li>Wähle bei <span class="ui">Engine</span> den Eintrag <strong>Splash</strong> und klicke <span class="ui">Save</span>.
+      <span class="expect">darunter den Hinweis „These settings do not apply while an external engine serves this model.“ – die MLX-Einstellungen gelten jetzt nicht mehr, Splash übernimmt.</span></li>
+  </ol>
+  <div class="callout warning"><p class="callout-title">Schalter ist ausgegraut?</p><p>oMLX nennt den Grund direkt neben dem Schalter. Fast immer fehlt der Draft, oder oMLX hat ihn noch nicht eingelesen. Lösung: Draft prüfen und <span class="ui">Models → Manager → Reload</span>. Details in der <a href="../reference/0003-fehlerdiagnose.html">Fehlerdiagnose</a>.</p></div>
+
+  <h2>Erster Test im Chat</h2>
+  <ol class="steps">
+    <li>Öffne den Reiter <span class="ui">Chat</span> und wähle <code>Qwen3.8-27B-oQ4e-mtp</code>.</li>
+    <li>Schreib zum Beispiel: <em>„Schreib eine kurze Python-Funktion, die prüft, ob ein Wort ein Palindrom ist.“</em>
+      <span class="expect">die erste Antwort lässt auf sich warten – oMLX startet Splash im Hintergrund und Splash liest beim allerersten Start alle Modelldateien einmal komplett. Ab der zweiten Frage geht es schnell.</span></li>
+  </ol>
+  <p>Kommt die Meldung <strong>HTTP 409 „unload is pending“</strong>, entlädt oMLX gerade noch den alten Motor. Warte ein paar Sekunden und schick die Frage noch einmal.</p>
+
+  <h2>Messung 2 · mit Splash</h2>
+  <ol class="steps">
+    <li>Zurück zu <span class="ui">Bench</span>. Gleiches Modell, gleicher <span class="ui">Benchmark Context</span>, gleiche Längen.</li>
+    <li><span class="ui">Run Benchmark</span> → <span class="ui">Unload models and run</span>.
+      <span class="expect">dieselbe Tabelle und eventuell der Hinweis „Community Upload Skipped“: Splash-Ergebnisse werden nicht an die Community-Seite omlx.ai übertragen. Das ist kein Fehler.</span></li>
+    <li>Notiere wieder <span class="ui">TG TPS</span> und <span class="ui">TTFT (ms)</span> aus der Zeile <code>pp1024/tg128</code>.</li>
+  </ol>
+
+  <h2>Entscheiden</h2>
+  <div class="callout success"><p class="callout-title">Die Regel</p><p><strong>Splash an, wenn es mindestens 15 % mehr Tokens pro Sekunde schafft und das erste Token nicht später kommt.</strong> Sonst bleibt oMLX allein.</p></div>
+  <p>Trag deine vier Werte ein. Der Rechner läuft nur in deinem Browser, nichts wird gesendet.</p>
+  <form class="decision-calc" onsubmit="return false">
+    <div class="decision-grid">
+      <label>oMLX allein – TG TPS<input name="base-tps" inputmode="decimal" placeholder="z. B. 72,5"></label>
+      <label>mit Splash – TG TPS<input name="splash-tps" inputmode="decimal" placeholder="z. B. 114,4"></label>
+      <label>oMLX allein – TTFT (ms)<input name="base-ttft" inputmode="decimal" placeholder="z. B. 146"></label>
+      <label>mit Splash – TTFT (ms)<input name="splash-ttft" inputmode="decimal" placeholder="z. B. 58"></label>
+    </div>
+    <button type="button">Entscheidung berechnen</button>
+    <div class="decision-result" role="status"></div>
+  </form>
+  <p>Die Beispielwerte in den Feldern stammen aus der Referenzmessung (M5 Max, Code-Aufgabe): Faktor 1,58, das erste Token kam sogar früher – also Splash an.</p>
+
+  <div class="callout warning"><p class="callout-title">Grenzen dieser Messung</p><p>Der eingebaute Benchmark macht pro Start nur einen Lauf mit künstlichem Text. Unterschiede unter etwa 10 % sind deshalb nicht belastbar – miss in dem Fall jede Variante zweimal. Und: Wie viel Splash bringt, hängt vom Inhalt ab. Bei freiem Text war der Gewinn in der Referenzmessung kleiner als bei Code.</p></div>
+
+  <h2>Splash wieder ausschalten</h2>
+  <p>Gleicher Weg, umgekehrt: <span class="ui">Models → Manager</span> → Einstellungs-Symbol → <span class="ui">Advanced Settings</span> → <span class="ui">Use external engine</span> aus → <span class="ui">Save</span>. Dein Modell läuft dann wieder mit dem eingebauten Motor. Du kannst jederzeit hin- und herschalten.</p>
+
+  <details class="exercise">
+    <summary>Für Neugierige: Splash bei der Arbeit zusehen</summary>
+    <p>oMLX schreibt pro Modell ein Splash-Protokoll. Im Terminal kannst du live mitlesen, während du im Chat fragst:</p>
+    <pre class="cmd"><code>tail -f ~/.omlx/logs/splash/*.log</code></pre>
+    <p>Pro Anfrage erscheint eine <code>Done</code>-Zeile, zum Beispiel <code>… output 512 · TTFT 0.3s · 114.4 tok/s · 4.5 tok/cycle</code>. <code>tok/cycle</code> zeigt, wie viele geratene Tokens das Zielmodell pro Durchgang übernimmt: bei Code etwa 4,5, bei freiem Text etwa 3. Beenden mit <kbd>ctrl</kbd> + <kbd>C</kbd>.</p>
+  </details>
+
+  <details class="exercise">
+    <summary>Für Fortgeschrittene: eine faire Baseline</summary>
+    <p>Im Dialog „Model Settings“ gibt es <span class="ui">Apply optimal settings</span>. Damit übernimmst du Einstellungen aus den Community-Messungen von omlx.ai für deinen Chip. Der eingebaute oMLX-Motor wird so oft noch schneller – auf einem M5 Max erreichte die Community beim 27B-Modell bis zu 98,5 tok/s. Erst gegen so eine gut eingestellte Baseline zeigt sich, was Splash wirklich bringt.</p>
+  </details>
+
+  <h2>Erwartete Beobachtungen</h2>
+  <ul class="checklist">
+    <li><label><input type="checkbox">Messung 1 (ohne Splash) ist notiert.</label></li>
+    <li><label><input type="checkbox"><span class="ui">Use external engine</span> ist an, Engine Splash, gespeichert.</label></li>
+    <li><label><input type="checkbox">Der Chat antwortet über Splash.</label></li>
+    <li><label><input type="checkbox">Messung 2 (mit Splash) ist notiert.</label></li>
+    <li><label><input type="checkbox">Der Rechner hat eine Entscheidung geliefert, und ich habe den Schalter entsprechend gesetzt.</label></li>
+  </ul>
+
+  <h2>Teste dich</h2>
+  <div class="quiz"><p class="quiz-prompt">1. Splash schafft 20 % mehr TG TPS, aber TTFT steigt von 200 auf 300 ms. Was sagt die Regel?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-feedback="Die Regel verlangt beides: mehr Tempo und keine längere Wartezeit.">Splash an, zwanzig Prozent reichen.</button>
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. TTFT ist schlechter – erst nachmessen, dann entscheiden.">Noch nicht, erst zweimal nachmessen.</button>
+    <button class="quiz-option" type="button" data-feedback="So schnell muss man Splash nicht abschreiben. Einzelläufe schwanken.">Splash für immer ganz aus.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <div class="quiz"><p class="quiz-prompt">2. Warum misst du zuerst ohne Splash?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-feedback="Splash braucht keine Aufwärmrunde des eingebauten Motors.">Weil Splash sonst nicht startet.</button>
+    <button class="quiz-option" type="button" data-feedback="Die Reihenfolge ändert nichts an der Geschwindigkeit.">Weil das Splash schneller macht.</button>
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. Ohne Baseline gibt es nichts zu vergleichen.">Weil du einen Vergleichswert brauchst.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <div class="quiz"><p class="quiz-prompt">3. Aus Kapitel 01 und 04: Bei welchem Inhalt rät der Draft am häufigsten richtig?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. Code ist vorhersagbar: ca. 4,5 Tokens pro Zyklus statt ca. 3 bei freiem Text.">Bei Code und Übersetzungen.</button>
+    <button class="quiz-option" type="button" data-feedback="Freier Text ist am wenigsten vorhersagbar – dort bringt Splash am wenigsten.">Bei freiem, kreativem Text.</button>
+    <button class="quiz-option" type="button" data-feedback="Die Trefferquote hängt deutlich vom Inhalt ab.">Bei allen Inhalten gleich.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <h2>Wie geht es weiter?</h2>
+  <p>Du hast jetzt ein schnelleres lokales Modell. Probier es mit deinen eigenen Aufgaben aus: Lass es Code schreiben, Texte übersetzen oder Mails entwerfen – und achte darauf, wo du den Unterschied spürst. Wer systematischer messen will (mehrere Läufe, eigene Prompts, Live-Rennen wie im Video), findet im Splash-Kit zum Begleitvideo passende Werkzeuge.</p>
+
+  <h2>Primärquelle</h2>
+  <p>Die <a href="https://github.com/jundot/omlx/blob/main/docs/Splash.md">Splash-Anleitung von oMLX</a> listet alle Einstellungen, die oMLX an Splash weitergibt, und die bekannten Grenzen.</p>
+
+  <p class="source-note"><a href="https://github.com/jundot/omlx">oMLX auf GitHub</a> · <a href="https://omlx.ai/benchmarks">omlx.ai Community-Benchmarks</a> · <a href="../reference/0002-spickzettel.html">Spickzettel</a></p>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine relevante Stelle und notiere deine Frage, deinen Einwand oder deinen Praxisfall als Kommentar – zum Beispiel deine eigenen Messwerte.</li><li>Öffne deinen eigenen KI-Agenten (zum Beispiel ChatGPT, Claude oder jetzt auch den Chat in oMLX) und gib ihm diese Seite als Kontext: Lass ihn die Lesson-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><button class="lesson-complete" type="button">Lesson als abgeschlossen markieren</button><div class="next"><strong>Geschafft.</strong> <a href="../reference/0002-spickzettel.html">Zum Spickzettel für später →</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/decision.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Fehlerdiagnose · oMLX und Splash</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="ref-0003-fehlerdiagnose" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a href="0001-glossar.html">Glossar</a><a href="0002-spickzettel.html">Spickzettel</a><a aria-current="page" href="0003-fehlerdiagnose.html">Fehlerdiagnose</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Referenz</p>
+    <h1 class="lesson-title">Fehlerdiagnose</h1>
+    <p class="lesson-sub">Vom Symptom zur Lösung. Such dir die Zeile, die zu dem passt, was du siehst.</p>
+  </header>
+
+  <h2>Terminal und Homebrew</h2>
+  <table>
+    <thead><tr><th>Symptom</th><th>Ursache</th><th>Lösung</th></tr></thead>
+    <tbody>
+      <tr><td><code>command not found: brew</code></td><td>Homebrew fehlt, oder die „Next steps“ nach der Installation wurden nicht ausgeführt.</td><td>Installer-Ausgabe hochscrollen, die <code>echo</code>- und <code>eval</code>-Befehle ausführen. Oder Terminal schließen und neu öffnen.</td></tr>
+      <tr><td><code>command not found: splash</code></td><td>Splash ist nicht installiert oder die Installation ist abgebrochen.</td><td><code>brew install incoai/tap/splash</code> erneut ausführen und auf Fehlermeldungen achten.</td></tr>
+      <tr><td>Homebrew meldet eine zu alte macOS-Version oder falsche Architektur</td><td>Splash verlangt macOS 26 oder neuer und einen Apple-Chip.</td><td>macOS aktualisieren (<span class="ui">Systemeinstellungen → Allgemein → Softwareupdate</span>). Auf Intel-Macs läuft Splash nicht.</td></tr>
+      <tr><td>Passwort wird „nicht angenommen“</td><td>Meist ein Tippfehler – die Eingabe ist unsichtbar.</td><td>Langsam neu tippen, <kbd>Enter</kbd>. Dein Benutzerkonto muss Administratorrechte haben.</td></tr>
+      <tr><td>Befehl hängt ohne <code>%</code></td><td>Er läuft noch (Download, Installation).</td><td>Warten. Nur wenn sich minutenlang nichts tut: <kbd>ctrl</kbd> + <kbd>C</kbd> und erneut versuchen.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>oMLX</h2>
+  <table>
+    <thead><tr><th>Symptom</th><th>Ursache</th><th>Lösung</th></tr></thead>
+    <tbody>
+      <tr><td>„App kann nicht geöffnet werden“</td><td>Gatekeeper prüft Apps außerhalb des App Stores.</td><td><span class="ui">Systemeinstellungen → Datenschutz &amp; Sicherheit</span> → bei oMLX <span class="ui">Dennoch öffnen</span>.</td></tr>
+      <tr><td>Dashboard-Adresse lädt nicht</td><td>Der Server ist aus.</td><td>Menüleisten-Symbol → <span class="ui">Start Server</span>. Prüfen: <code>curl -s http://localhost:8000/health</code>.</td></tr>
+      <tr><td>Login im Dashboard schlägt fehl</td><td>Falscher API-Key.</td><td>Key aus deinem Passwort-Manager kopieren. Er steht auch in den App-Einstellungen (<span class="ui">Settings…</span> im Menüleisten-Symbol).</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Splash in oMLX</h2>
+  <table>
+    <thead><tr><th>Symptom</th><th>Ursache</th><th>Lösung</th></tr></thead>
+    <tbody>
+      <tr><td>Unter <span class="ui">External engines</span> fehlt Splash</td><td>oMLX lief schon, als Splash installiert wurde.</td><td>oMLX beenden (<span class="ui">Quit oMLX</span>) und neu starten. Hilft das nicht: Pfad von <code>which splash</code> dort von Hand eintragen.</td></tr>
+      <tr><td>Modell taucht in oMLX nicht auf</td><td>Das <strong>Splash-Komplettpaket</strong> (<code>incoai/…-Splash</code>, 17–20 GB) wurde geladen. oMLX kann es nicht lesen.</td><td>Im Finder <kbd>⇧</kbd> + <kbd>⌘ Cmd</kbd> + <kbd>G</kbd> drücken, <code>~/.omlx/models</code> eingeben, den Ordner mit <code>-Splash</code> am Ende suchen und in den Papierkorb legen. Dann Zielmodell <strong>und</strong> Draft getrennt laden und <span class="ui">Reload</span>.</td></tr>
+      <tr><td>Schalter <span class="ui">Use external engine</span> ausgegraut, Meldung „Splash needs the … DFlash2 draft in a model directory“</td><td>Draft fehlt oder ist noch nicht eingelesen.</td><td><code>incoai/Qwen3.8-27B-DFlash2</code> im Downloader laden, <span class="ui">Models → Manager → Reload</span>.</td></tr>
+      <tr><td>Schalter ausgegraut, Meldung „Splash serves … only“</td><td>Das Modell gehört nicht zu den unterstützten Familien.</td><td>Qwen3.8-27B oder Qwen3.6-35B-A3B verwenden.</td></tr>
+      <tr><td>HTTP 409 „unload is pending“</td><td>oMLX entlädt nach dem Umschalten noch den alten Motor.</td><td>Ein paar Sekunden warten, dann erneut senden.</td></tr>
+      <tr><td>Erste Antwort mit Splash dauert sehr lange</td><td>Beim ersten Start liest Splash alle Modelldateien einmal komplett.</td><td>Abwarten. Spätere Starts sind schneller.</td></tr>
+      <tr><td>Splash startet nicht, Speicherfehler</td><td>Zu wenig freier Arbeitsspeicher. Das 27B braucht mit Splash mindestens rund 18 GB.</td><td>Andere Modelle und große Programme schließen. Unter 36 GB Arbeitsspeicher wird es knapp.</td></tr>
+      <tr><td>Nach <span class="ui">Reload</span> sind alle Modelle entladen</td><td>So gewollt: Reload liest alles neu ein.</td><td>Nur ausführen, wenn gerade nichts läuft. Danach einmal im Chat „aufwärmen“.</td></tr>
+      <tr><td>Längere Prompts werden abgelehnt</td><td>Auf kleineren Macs verkürzt Splash den Kontext, damit das Modell in den Speicher passt.</td><td>Kürzere Eingaben, oder Splash für dieses Modell ausschalten.</td></tr>
+      <tr><td>Port-8000-Sorge</td><td>–</td><td>Unbegründet: oMLX bleibt auf 8000 und startet Splash auf einem anderen, freien Port.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Messung</h2>
+  <table>
+    <thead><tr><th>Symptom</th><th>Ursache</th><th>Lösung</th></tr></thead>
+    <tbody>
+      <tr><td>Zwei Läufe liefern deutlich andere Zahlen</td><td>Einzelläufe schwanken, besonders TTFT.</td><td>Jede Variante zweimal messen, ohne andere Programme im Hintergrund, Netzteil angeschlossen.</td></tr>
+      <tr><td>„Community Upload Skipped“</td><td>oMLX lädt Splash-Ergebnisse absichtlich nicht zu omlx.ai hoch.</td><td>Kein Fehler, nichts tun.</td></tr>
+      <tr><td>Splash ist langsamer als oMLX</td><td>Kann echt sein – beim 35B-A3B ist der eingebaute Motor schon sehr schnell.</td><td>Splash für dieses Modell ausschalten. Genau dafür misst du.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>M1 oder M2?</h2>
+  <p>Das offizielle Splash läuft erst ab M3. Für M1/M2 gibt es einen Community-Build namens <code>splash-m1</code> (Releases unter <a href="https://github.com/paperniuk/splash/releases">github.com/paperniuk/splash</a>), den oMLX ebenfalls findet. Er wurde für dieses Tutorial nicht getestet. Nutze ihn nur, wenn du dem Projekt vertraust.</p>
+
+  <h2>Wo du Hilfe findest</h2>
+  <p>Bei Fehlern, die hier fehlen: <a href="https://github.com/jundot/omlx/issues">oMLX Issues</a> für alles rund ums Dashboard, <a href="https://github.com/incoai/splash/issues">Splash Issues</a> für Probleme mit Splash selbst. Such dort zuerst nach deiner Fehlermeldung – oft hatte jemand das Problem schon.</p>
+
+  <p class="source-note"><a href="https://github.com/jundot/omlx/blob/main/docs/Splash.md">oMLX: Splash</a> · <a href="https://github.com/incoai/splash">Splash auf GitHub</a></p>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere die Zeile, die deinem Problem am nächsten kommt, und notiere deine genaue Fehlermeldung als Kommentar.</li><li>Öffne deinen eigenen KI-Agenten und gib ihm diese Seite als Kontext: Lass ihn die HTML-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deinem Problem weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><div class="next"><a href="../index.html">← Zurück zur Übersicht</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>

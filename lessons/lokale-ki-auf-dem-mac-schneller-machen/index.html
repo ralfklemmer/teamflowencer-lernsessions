@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lokale KI auf dem Mac schneller machen – oMLX und Splash</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/course.css">
+</head>
+<body>
+<main class="lesson course-home" data-lesson-id="index" data-workspace-root="./">
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Praxis-Tutorial · oMLX und Splash auf dem Mac</p>
+    <h1 class="lesson-title">Lokale KI auf dem Mac schneller machen</h1>
+    <p class="lesson-sub">Gleicher Mac, gleiches Modell, gleiche Antwort – bis zu 1,7-mal schneller. Von null bis zur eigenen Messung, ohne Vorwissen zu Terminal oder Linux.</p>
+    <div class="lesson-meta"><span>5 Kapitel</span><span>ca. 60–90 Minuten plus Downloadzeit</span><span>Mac mit Apple Silicon</span></div>
+  </header>
+
+  <div class="callout learning-objective">
+    <p class="callout-title">Das erreichst du</p>
+    <p>Am Ende läuft auf deinem Mac ein KI-Sprachmodell komplett lokal – ohne Cloud, ohne Abo. Du hast <strong>oMLX</strong> als Steuerzentrale eingerichtet, <strong>Splash</strong> als zweiten, schnelleren Motor eingebaut und selbst gemessen, ob sich das auf deinem Gerät lohnt.</p>
+  </div>
+
+  <h2>Worum geht es – in einem Bild</h2>
+  <div class="diagram">du stellst eine Frage (Chat, Programm, KI-Agent)
+      ↓
+oMLX – die Steuerzentrale auf deinem Mac (localhost:8000)
+      │  wählt pro Modell einen Motor
+      ├──► MLX-Motor (eingebaut): Standard, für alle Modelle
+      └──► Splash (zusätzlich installiert): schneller bei zwei Modellen
+      ↓
+das Sprachmodell schreibt die Antwort</div>
+  <p>Du tauschst nicht das Modell und nicht deinen Mac, sondern nur den Motor, der das Modell antreibt. Ob der neue Motor schneller ist, hängt vom Modell und von der Aufgabe ab. Deshalb endet das Tutorial mit einer Messung auf <em>deinem</em> Mac.</p>
+
+  <section class="path-choice" aria-labelledby="path-heading">
+    <h2 id="path-heading">Wähle deinen Einstieg</h2>
+    <div class="path-choice-grid">
+      <div class="path-option">
+        <h3>Neu hier</h3>
+        <p>Du hast noch nie ein Terminal geöffnet oder weißt nicht, was oMLX ist? Perfekt. Starte bei Kapitel 01 und arbeite die Kapitel der Reihe nach ab.</p>
+        <a class="path-action" href="lessons/0001-was-splash-bringt.html">Geführt mit Kapitel 01 starten →</a>
+      </div>
+      <div class="path-option">
+        <h3>Erfahren oder vom Video hier</h3>
+        <p>oMLX läuft schon, Homebrew ist da? Spring direkt zur Splash-Installation oder nimm den Spickzettel.</p>
+        <p><a href="lessons/0004-splash-und-modelle.html">Direkt zu Splash</a> · <a href="reference/0002-spickzettel.html">Zum Spickzettel</a></p>
+      </div>
+    </div>
+  </section>
+
+  <h2>Passt dein Mac?</h2>
+  <p>Prüfe das, bevor du irgendetwas herunterlädst. Wie du die Werte findest, steht in Kapitel 02. Die Kurzfassung: Klicke oben links auf das Apple-Menü  und wähle <span class="ui">Über diesen Mac</span>.</p>
+  <table>
+    <thead><tr><th>Was</th><th>Du brauchst</th><th>Warum</th></tr></thead>
+    <tbody>
+      <tr><td>Chip</td><td>Apple M3 oder neuer</td><td>Das offizielle Splash läuft erst ab M3. Für M1/M2 gibt es einen ungetesteten Community-Nachbau (siehe <a href="reference/0003-fehlerdiagnose.html">Fehlerdiagnose</a>).</td></tr>
+      <tr><td>Arbeitsspeicher</td><td>mindestens 36 GB, besser 48 GB oder mehr</td><td>Laut Splash-Projekt brauchen die 4-Bit-Modelle mindestens 36 GB, empfohlen sind 48 GB.</td></tr>
+      <tr><td>macOS</td><td>macOS 26.4 oder neuer</td><td>Mindestversion laut Splash-Projekt.</td></tr>
+      <tr><td>freier Speicherplatz</td><td>ca. 25 GB, besser mehr</td><td>Modell und Draft zusammen ca. 20,4 GB, dazu ein Zwischenspeicher.</td></tr>
+      <tr><td>Internet</td><td>für die Downloads</td><td>Danach läuft alles offline.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warning"><p class="callout-title">Dein Mac passt nicht?</p><p>Dann lohnt sich Kapitel 01 trotzdem: Du verstehst, wie die Beschleunigung funktioniert. oMLX selbst (Kapitel 03) läuft schon ab M1 und macOS 15 – nur ohne Splash.</p></div>
+
+  <div class="video-card" role="group" aria-labelledby="video-status">
+    <div>
+      <span class="status-label">Video erscheint in Kürze</span>
+    </div>
+    <div>
+      <h2 id="video-status">Begleitvideo: Gleicher Mac, gleiches Modell, 58 % schneller</h2>
+      <p>Das Video zeigt Splash in oMLX live im Rennen gegen den eingebauten Motor. Dieses Tutorial funktioniert eigenständig – du brauchst das Video nicht.</p>
+    </div>
+  </div>
+
+  <h2>Die fünf Kapitel</h2>
+  <section aria-label="Tutorial-Kapitel">
+    <div class="module"><div class="module-n">01</div><div><h3><a href="lessons/0001-was-splash-bringt.html">Was Splash bringt – und wann nicht</a></h3><p>Tokens pro Sekunde, zwei Motoren, „Draft rät, Zielmodell prüft“ – ganz ohne Technikvorwissen.</p></div></div>
+    <div class="module"><div class="module-n">02</div><div><h3><a href="lessons/0002-terminal-und-homebrew.html">Terminal und Homebrew – keine Angst vor der Kommandozeile</a></h3><p>Terminal öffnen, Befehle einfügen, Ausgaben lesen, Mac prüfen und Homebrew installieren.</p></div></div>
+    <div class="module"><div class="module-n">03</div><div><h3><a href="lessons/0003-omlx-einrichten.html">oMLX installieren und starten</a></h3><p>App herunterladen, API-Key festlegen, Server starten und das Web-Dashboard öffnen.</p></div></div>
+    <div class="module"><div class="module-n">04</div><div><h3><a href="lessons/0004-splash-und-modelle.html">Splash installieren und die richtigen Modelle laden</a></h3><p>Ein Befehl für Splash, zwei Downloads im Dashboard – und der Fehler, den du dir sparen kannst.</p></div></div>
+    <div class="module"><div class="module-n">05</div><div><h3><a href="lessons/0005-einschalten-und-messen.html">Splash einschalten und selbst messen</a></h3><p>Den Schalter umlegen, im Chat testen, mit und ohne Splash messen und entscheiden.</p></div></div>
+  </section>
+
+  <h2>Fokussierte Referenzen</h2>
+  <p>Zum Nachschlagen, wenn du die Kapitel einmal durchgearbeitet hast – oder wenn etwas klemmt.</p>
+  <nav class="reference-list" aria-label="Tutorial-Referenzen">
+    <a href="reference/0001-glossar.html"><strong>Glossar</strong><span>Alle Begriffe in einem Satz erklärt</span></a>
+    <a href="reference/0002-spickzettel.html"><strong>Spickzettel</strong><span>Das ganze Setup auf einer Seite</span></a>
+    <a href="reference/0003-fehlerdiagnose.html"><strong>Fehlerdiagnose</strong><span>Vom Symptom zur Lösung</span></a>
+  </nav>
+
+  <div class="callout warning">
+    <p class="callout-title">Ehrlich zu den Zahlen</p>
+    <p>Alle Messwerte in diesem Tutorial stammen von einem einzigen Gerät: M5 Max mit 128 GB, gemessen am 17.10.2026 mit oMLX 0.7.1rc1 und Splash 1.3.2. Sie sind ein Startpunkt, kein Versprechen für deinen Mac.</p>
+  </div>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine relevante Stelle und notiere deine Frage, deinen Einwand oder deinen Praxisfall als Kommentar.</li><li>Öffne deinen eigenen KI-Agenten (zum Beispiel ChatGPT, Claude oder den Chat in oMLX) und gib ihm diese Seite als Kontext: Lass ihn die HTML-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer">
+    <div class="course-progress" data-total="5"><span></span></div>
+    <div class="next"><strong>Start:</strong> <a href="lessons/0001-was-splash-bringt.html">Verstehen, was Splash bringt →</a></div>
+  </footer>
+</main>
+<script src="assets/course.js"></script>
+<script src="assets/annotations.js"></script>
+</body>
+</html>

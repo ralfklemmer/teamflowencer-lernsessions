@@ -1,0 +1,359 @@
+:root {
+  --ok: #2f6b3c;
+  --ok-soft: #e8f3e0;
+  --warn: #9a6516;
+  --warn-soft: #fff4d8;
+  --blue: #255f85;
+  --blue-soft: #e7f2f8;
+}
+
+.course-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  margin: 0 0 2rem;
+  font-family: var(--sans);
+  font-size: .76rem;
+}
+.course-nav a {
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: .25rem .65rem;
+  text-decoration: none;
+  color: var(--muted);
+  background: #fff;
+}
+.course-nav a[aria-current="page"] { border-color: var(--accent); color: var(--accent); }
+.course-nav a:hover { border-color: var(--accent); color: var(--accent); }
+
+.learning-objective {
+  background: var(--blue-soft);
+  border-left-color: var(--blue);
+}
+.learning-objective .callout-title { color: var(--blue); }
+
+.warning { background: var(--warn-soft); border-left-color: var(--warn); }
+.warning .callout-title { color: var(--warn); }
+.success { background: var(--ok-soft); border-left-color: var(--ok); }
+.success .callout-title { color: var(--ok); }
+
+.evidence-ladder {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .55rem;
+  margin: 1.5rem 0;
+}
+.evidence-step {
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  padding: .8rem;
+  background: #fff;
+  font-size: .85rem;
+}
+.evidence-step strong { display: block; font-family: var(--sans); font-size: .78rem; }
+@media (max-width: 700px) { .evidence-ladder { grid-template-columns: 1fr 1fr; } }
+
+.exercise {
+  margin: 2rem 0;
+  padding: 1.4rem;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+.exercise h2, .exercise h3 { margin-top: 0; }
+.exercise details { margin: .8rem 0; border-top: 1px solid var(--rule); padding-top: .8rem; }
+.exercise summary { cursor: pointer; font-family: var(--sans); color: var(--accent); font-weight: 600; }
+
+.command-block { position: relative; }
+.command-label {
+  font-family: var(--sans);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  font-size: .7rem;
+  margin-bottom: -.7rem;
+}
+
+.checklist { list-style: none; padding: 0; }
+.checklist li { margin: .55rem 0; }
+.checklist label { display: flex; gap: .6rem; align-items: flex-start; cursor: pointer; }
+.checklist input { margin-top: .4rem; accent-color: var(--accent); }
+
+.claim-card {
+  display: grid;
+  grid-template-columns: minmax(7rem, .7fr) 1.5fr;
+  gap: .8rem;
+  border-bottom: 1px solid var(--rule);
+  padding: .7rem 0;
+}
+.claim-card strong { font-family: var(--sans); font-size: .8rem; color: var(--muted); }
+
+.course-progress {
+  height: 8px;
+  border: 1px solid var(--rule);
+  background: #fff;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: .75rem 0 1.5rem;
+}
+.course-progress > span { display: block; height: 100%; background: var(--accent); width: 0; }
+
+.lesson-complete {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--sans);
+  border: 1px solid var(--rule);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 4px;
+  padding: .55rem .8rem;
+  cursor: pointer;
+}
+.lesson-complete.done { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+
+.source-note { font-size: .86rem; color: var(--muted); }
+.source-note::before { content: "Quelle: "; font-family: var(--sans); font-weight: 600; }
+
+.frag-nach ol { margin-bottom: 0; }
+.frag-nach li { margin-bottom: .55rem; }
+
+.path-choice { margin: 2.5rem 0; }
+.path-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.path-option {
+  padding-top: 1rem;
+  border-top: 2px solid var(--ink);
+}
+.path-option h3 {
+  margin-top: 0;
+  font-family: var(--sans);
+  font-style: normal;
+}
+.path-action { font-family: var(--sans); font-weight: 650; }
+
+.video-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .8fr) 1.2fr;
+  gap: 1.5rem;
+  align-items: center;
+  margin: 2.75rem 0;
+  padding: 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: #f4f1ea;
+  color: var(--ink-soft);
+}
+.video-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  filter: saturate(.7);
+}
+.video-card.is-live img { filter: none; }
+.video-card.is-live a > img { transition: filter .15s ease; }
+.video-card.is-live a:hover > img { filter: saturate(1.1); }
+.video-card h2 { margin-top: 0; color: var(--ink); }
+.status-label {
+  display: inline-block;
+  padding: .2rem .55rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--bg);
+}
+
+.module {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1rem;
+  padding: 1.15rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.module-n { font: 600 1.5rem var(--sans); color: var(--accent); }
+.module h3 { margin: 0 0 .25rem; font-size: 1.15rem; font-style: normal; }
+.module p { margin: 0; color: var(--ink-soft); }
+.module a { text-decoration: none; }
+.module a:hover { text-decoration: underline; }
+
+.reference-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1.5rem;
+  margin: 1.5rem 0 2.5rem;
+}
+.reference-list a {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+  padding: .85rem 0;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+}
+.reference-list a:hover strong { text-decoration: underline; text-underline-offset: 3px; }
+.reference-list span { color: var(--ink-soft); font-size: .88rem; }
+
+.worksheet td:first-child { width: 28%; font-family: var(--sans); font-weight: 600; }
+.worksheet .worksheet-space { min-height: 3.5rem; display: block; }
+
+:where(.course-nav a, .path-action, .quiz-option, .reference-list a, .lesson-footer a, .lesson a):focus-visible,
+.lesson-complete:focus-visible,
+.checklist input:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+
+/* Überbreite Code-/Diagramm-Blöcke sind per Tastatur fokussierbar (tabindex via course.js). */
+pre:focus-visible,
+.diagram:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+::selection { background: var(--highlight); color: var(--ink); }
+
+@media (max-width: 700px) {
+  .path-choice-grid,
+  .reference-list,
+  .video-card { grid-template-columns: 1fr; }
+  .video-card { gap: 1rem; }
+}
+
+@media print {
+  .course-nav, .lesson-complete, .course-progress { display: none; }
+}
+
+/* Klickpfade in der (englischen) oMLX-Oberfläche */
+.ui {
+  font-family: var(--sans);
+  font-size: .86em;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: .05rem .4rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: #fff;
+}
+kbd {
+  font-family: var(--sans);
+  font-size: .82em;
+  padding: .05rem .4rem;
+  border: 1px solid var(--rule);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: #fff;
+}
+
+/* Nummerierte Schritte mit erwartetem Ergebnis */
+.steps { counter-reset: step; list-style: none; padding: 0; margin: 1.5rem 0; }
+.steps > li {
+  counter-increment: step;
+  position: relative;
+  padding: 0 0 1.1rem 2.6rem;
+  margin: 0;
+  border-left: 1px solid var(--rule);
+  margin-left: .9rem;
+}
+.steps > li:last-child { border-left-color: transparent; }
+.steps > li::before {
+  content: counter(step);
+  position: absolute;
+  left: -.9rem;
+  top: 0;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font: 600 .85rem/1.8rem var(--sans);
+  text-align: center;
+}
+.steps pre { margin: .6rem 0; }
+.expect {
+  display: block;
+  margin-top: .45rem;
+  padding: .45rem .7rem;
+  background: var(--ok-soft);
+  border-radius: 4px;
+  font-size: .9rem;
+}
+.expect::before { content: "Du siehst: "; font-family: var(--sans); font-weight: 600; color: var(--ok); }
+
+.prompt-sign { color: var(--muted); user-select: none; }
+
+@media print {
+  .steps > li::before { background: #fff; color: var(--ink); border: 1px solid var(--ink); }
+}
+
+/* Kopierknopf für Befehlsblöcke (course.js) */
+.cmd-wrap { position: relative; }
+.cmd-copy {
+  position: absolute;
+  top: .45rem;
+  right: .45rem;
+  font: 600 .72rem var(--sans);
+  padding: .25rem .55rem;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 4px;
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  cursor: pointer;
+}
+.cmd-copy:hover { background: rgba(255,255,255,.25); }
+.cmd-copy:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+pre.cmd { padding-right: 9rem; }
+@media print { .cmd-copy { display: none; } }
+
+/* Entscheidungsrechner (decision.js) */
+.decision-calc {
+  margin: 1.5rem 0;
+  padding: 1.2rem 1.4rem;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  font-family: var(--sans);
+  font-size: .9rem;
+}
+.decision-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem 1.2rem; margin-bottom: 1rem; }
+.decision-grid label { display: flex; flex-direction: column; gap: .25rem; color: var(--ink-soft); }
+.decision-grid input {
+  font: inherit;
+  padding: .45rem .6rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--bg);
+}
+.decision-grid input:focus-visible, .decision-calc button:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.decision-calc button {
+  font: 600 .88rem var(--sans);
+  padding: .5rem .9rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+.decision-result { display: none; margin-top: 1rem; padding: .7rem .9rem; border-radius: 4px; background: var(--warn-soft); }
+.decision-result.show { display: block; }
+.decision-result.is-on { background: var(--ok-soft); color: var(--ok); font-weight: 600; }
+.decision-result.is-off { background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+@media (max-width: 640px) { .decision-grid { grid-template-columns: 1fr; } }
+
+/* Glossar */
+.glossary { margin: 1rem 0 2rem; }
+.glossary dt { font-family: var(--sans); font-weight: 650; margin-top: 1rem; }
+.glossary dd { margin: .2rem 0 0; color: var(--ink-soft); }
+
+/* Schmale Bildschirme: lange Klickpfade, Modellnamen und Tabellen nicht über den Rand laufen lassen */
+.lesson code, .lesson .ui { overflow-wrap: anywhere; }
+@media (max-width: 640px) {
+  .ui { white-space: normal; }
+  table { display: block; overflow-x: auto; }
+  .lesson-title { font-size: 1.7rem; }
+}

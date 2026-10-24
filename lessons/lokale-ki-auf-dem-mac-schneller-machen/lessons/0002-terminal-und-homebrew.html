@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>02 · Terminal und Homebrew</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<article class="lesson" data-lesson-id="0002-terminal-und-homebrew" data-workspace-root="../">
+  <nav class="course-nav" aria-label="Tutorial-Navigation"><a href="../index.html">Übersicht</a><a href="0001-was-splash-bringt.html">01 Verstehen</a><a aria-current="page" href="0002-terminal-und-homebrew.html">02 Terminal</a><a href="0003-omlx-einrichten.html">03 oMLX</a><a href="0004-splash-und-modelle.html">04 Splash</a><a href="0005-einschalten-und-messen.html">05 Messen</a></nav>
+
+  <header class="lesson-header">
+    <p class="lesson-eyebrow">Kapitel 02 · Vorbereitung</p>
+    <h1 class="lesson-title">Terminal und Homebrew – keine Angst vor der Kommandozeile</h1>
+    <p class="lesson-sub">Splash gibt es nicht als App zum Herunterladen. Du installierst es mit einem einzigen Befehl. Dafür lernst du hier das Terminal kennen – genau so viel, wie du brauchst.</p>
+    <div class="lesson-meta"><span>15–25 Minuten</span><span>Terminal</span><span>Admin-Passwort deines Macs</span></div>
+  </header>
+
+  <div class="callout learning-objective"><p class="callout-title">Dein Ergebnis</p><p>Du öffnest das Terminal, führst Befehle sicher aus, weißt, ob dein Mac passt, und hast <strong>Homebrew</strong> installiert – das Werkzeug, mit dem du in Kapitel 04 Splash installierst.</p></div>
+
+  <h2>Was ist das Terminal?</h2>
+  <p>Das <strong>Terminal</strong> ist eine App, die auf jedem Mac schon installiert ist. Statt zu klicken, tippst du dort eine Anweisung – einen <strong>Befehl</strong> – und drückst <kbd>Enter</kbd> (die Zeilenumschalttaste ↩). Der Mac führt den Befehl aus und antwortet mit Text.</p>
+  <p>Das klingt nach Linux und Hackern, ist aber nur eine andere Art, dem Mac etwas zu sagen. Du musst dir keinen einzigen Befehl merken: Du kopierst sie aus diesem Tutorial.</p>
+
+  <h2>Das Terminal öffnen</h2>
+  <ol class="steps">
+    <li>Drücke <kbd>⌘ Cmd</kbd> + <kbd>Leertaste</kbd>. Oben erscheint das Suchfeld von Spotlight.</li>
+    <li>Tippe <code>Terminal</code> und drücke <kbd>Enter</kbd>.
+      <span class="expect">ein Fenster mit wenig Text. Die letzte Zeile endet ungefähr so: <code>name@MacBook ~ %</code> und dahinter blinkt ein Cursor.</span></li>
+  </ol>
+  <p>Diese letzte Zeile heißt <strong>Eingabeaufforderung</strong> (englisch: Prompt). Das <code>%</code> am Ende bedeutet: „Ich bin bereit, gib mir einen Befehl.“ Das <code>~</code> steht für deinen persönlichen Benutzerordner.</p>
+
+  <h2>Die fünf Regeln für dieses Tutorial</h2>
+  <table>
+    <thead><tr><th>Regel</th><th>Warum</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Kopieren statt abtippen.</strong> Klicke auf <span class="ui">Befehl kopieren</span> am Befehlsblock, klicke ins Terminal, drücke <kbd>⌘ Cmd</kbd> + <kbd>V</kbd>, dann <kbd>Enter</kbd>.</td><td>Ein fehlendes Leerzeichen oder Anführungszeichen reicht, damit ein Befehl scheitert.</td></tr>
+      <tr><td><strong>Ein Befehlsblock nach dem anderen.</strong></td><td>So siehst du sofort, welcher Schritt ein Problem hatte.</td></tr>
+      <tr><td><strong>Warte, bis wieder <code>%</code> erscheint.</strong></td><td>Solange das Zeichen fehlt, arbeitet der Mac noch. Manche Befehle brauchen Minuten.</td></tr>
+      <tr><td><strong>Passwort-Eingabe ist unsichtbar.</strong></td><td>Fragt das Terminal nach <code>Password:</code>, tippe dein Mac-Anmeldepasswort. Es erscheinen keine Punkte – das ist normal. Danach <kbd>Enter</kbd>.</td></tr>
+      <tr><td><strong>Notbremse: <kbd>ctrl</kbd> + <kbd>C</kbd>.</strong></td><td>Bricht den laufenden Befehl ab. Danach erscheint wieder <code>%</code>.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><p class="callout-title">Ein Wort zur Sicherheit</p><p>Ein Befehl im Terminal hat dieselben Rechte wie du. Führe deshalb nur Befehle aus Quellen aus, denen du vertraust. In diesem Tutorial stammen alle Befehle aus den offiziellen Anleitungen von Homebrew, oMLX und Splash – die Quellen sind jeweils verlinkt.</p></div>
+
+  <h2>Übung: Passt dein Mac?</h2>
+  <p>Deine ersten beiden Befehle. Sie ändern nichts, sie fragen nur nach.</p>
+  <ol class="steps">
+    <li>Welche macOS-Version hast du?
+      <pre class="cmd"><code>sw_vers -productVersion</code></pre>
+      <span class="expect">eine Versionsnummer, zum Beispiel <code>27.0.1</code>. Für Splash brauchst du <strong>26.4 oder höher</strong>.</span></li>
+    <li>Welcher Chip steckt in deinem Mac?
+      <pre class="cmd"><code>sysctl -n machdep.cpu.brand_string</code></pre>
+      <span class="expect">zum Beispiel <code>Apple M5 Max</code>. Für Splash brauchst du <strong>M3 oder neuer</strong>.</span></li>
+    <li>Wie viel Arbeitsspeicher hast du? Das geht ohne Terminal: Apple-Menü  oben links → <span class="ui">Über diesen Mac</span>.
+      <span class="expect">eine Zeile „Speicher“ mit zum Beispiel <code>48 GB</code>. Splash empfiehlt <strong>48 GB</strong>, Minimum sind <strong>36 GB</strong>.</span></li>
+  </ol>
+  <div class="callout warning"><p class="callout-title">Passt einer der Werte nicht?</p><p>Dann halte hier an. Ohne passenden Mac startet Splash nicht. oMLX allein kannst du ab M1 und macOS 15 trotzdem nutzen – Kapitel 03 funktioniert also auch für dich.</p></div>
+
+  <h2>Homebrew installieren</h2>
+  <p><strong>Homebrew</strong> ist ein sogenannter Paketmanager: ein App-Store fürs Terminal. Du sagst „installiere X“, und Homebrew lädt X herunter, legt es an die richtige Stelle und hält es aktuell. Splash wird über Homebrew verteilt.</p>
+  <p>Hast du Homebrew vielleicht schon? Prüfe es:</p>
+  <pre class="cmd"><code>brew --version</code></pre>
+  <p>Erscheint <code>Homebrew 4.x.x</code> oder höher, bist du fertig mit diesem Kapitel – spring zum Quiz. Erscheint <code>zsh: command not found: brew</code>, installierst du es jetzt. „command not found“ heißt einfach: Diesen Befehl kennt der Mac (noch) nicht.</p>
+
+  <ol class="steps">
+    <li>Kopiere den offiziellen Installationsbefehl von <a href="https://brew.sh/de/">brew.sh</a>. Er lautet:
+      <pre class="cmd"><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre>
+      Füge ihn ins Terminal ein und drücke <kbd>Enter</kbd>.</li>
+    <li>Das Terminal fragt nach <code>Password:</code>. Tippe dein Mac-Passwort (unsichtbar) und drücke <kbd>Enter</kbd>.</li>
+    <li>Der Installer erklärt, was er tun wird, und wartet mit <code>Press RETURN/ENTER to continue</code>. Drücke <kbd>Enter</kbd>.
+      <span class="expect">viele Zeilen Text laufen durch. Fehlen auf deinem Mac Apples Entwickler-Werkzeuge (Command Line Tools), lädt der Installer sie mit. Das kann 5–15 Minuten dauern.</span></li>
+    <li>Am Ende steht <code>Installation successful!</code> und darunter ein Abschnitt <code>==&gt; Next steps:</code> mit zwei oder drei Befehlen.
+      <span class="expect">Befehle, die mit <code>echo</code> und <code>eval</code> beginnen.</span></li>
+    <li><strong>Diese Next-steps-Befehle unbedingt ausführen.</strong> Kopiere sie aus <em>deinem</em> Terminal-Fenster (markieren, <kbd>⌘ Cmd</kbd> + <kbd>C</kbd>), füge sie ein und drücke <kbd>Enter</kbd>. Auf Macs mit Apple-Chip sehen sie meist so aus:
+      <pre><code>echo &gt;&gt; ~/.zprofile
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' &gt;&gt; ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre>
+      Sie sagen dem Terminal, wo Homebrew liegt – jetzt und bei jedem künftigen Start.</li>
+    <li>Prüfe das Ergebnis:
+      <pre class="cmd"><code>brew --version</code></pre>
+      <span class="expect"><code>Homebrew</code> gefolgt von einer Versionsnummer.</span></li>
+  </ol>
+  <div class="callout"><p class="callout-title">Lieber klicken?</p><p>Homebrew bietet auch ein klassisches Installationspaket (<code>.pkg</code>) an. Du findest es auf <a href="https://github.com/Homebrew/brew/releases/latest">der Release-Seite von Homebrew</a>. Die Next-steps-Befehle aus Schritt 5 brauchst du danach trotzdem, falls <code>brew --version</code> nicht funktioniert.</p></div>
+
+  <h2>Erwartete Beobachtungen</h2>
+  <ul class="checklist">
+    <li><label><input type="checkbox">Ich kann das Terminal über Spotlight öffnen.</label></li>
+    <li><label><input type="checkbox">macOS 26.4 oder neuer, Chip M3 oder neuer, mindestens 36 GB Speicher.</label></li>
+    <li><label><input type="checkbox"><code>brew --version</code> zeigt eine Versionsnummer.</label></li>
+  </ul>
+
+  <h2>Teste dich</h2>
+  <div class="quiz"><p class="quiz-prompt">1. Du hast einen Befehl eingefügt und Enter gedrückt. Es erscheint seit einer Minute kein <code>%</code>. Was tust du?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-feedback="Damit brichst du den Befehl ab. Das ist die Notbremse, nicht der Normalfall.">Sofort ctrl + C drücken.</button>
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. Fehlendes % heißt: Der Mac arbeitet noch. Downloads und Installationen dauern.">Warten, der Befehl läuft noch.</button>
+    <button class="quiz-option" type="button" data-feedback="Ein zweiter Befehl würde erst nach dem ersten laufen – oder ihn stören.">Den nächsten Befehl direkt einfügen.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <div class="quiz"><p class="quiz-prompt">2. Du tippst dein Passwort, aber es erscheinen keine Punkte. Was bedeutet das?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-feedback="Die Tastatur funktioniert. Das Terminal zeigt Passwörter absichtlich nicht an.">Die Tastatur reagiert gerade nicht.</button>
+    <button class="quiz-option" type="button" data-feedback="Neu starten ist nicht nötig. Tippe einfach weiter und drücke Enter.">Das Terminal muss neu starten.</button>
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. Die Eingabe ist unsichtbar, kommt aber an.">Alles normal, einfach weiter tippen.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <div class="quiz"><p class="quiz-prompt">3. Nach der Installation meldet <code>brew --version</code>: <code>command not found: brew</code>. Was fehlt am wahrscheinlichsten?</p><div class="quiz-options">
+    <button class="quiz-option" type="button" data-correct="true" data-feedback="Richtig. Ohne diese Befehle weiß das Terminal nicht, wo Homebrew liegt.">Die Befehle unter „Next steps“.</button>
+    <button class="quiz-option" type="button" data-feedback="Ein Neustart des Macs ersetzt die Next-steps-Befehle nicht.">Ein Neustart des ganzen Macs.</button>
+    <button class="quiz-option" type="button" data-feedback="Wenn „Installation successful!“ erschien, ist Homebrew da – nur nicht auffindbar.">Noch eine zweite komplette Installation.</button>
+  </div><div class="quiz-feedback"></div></div>
+
+  <h2>Primärquelle</h2>
+  <p>Apple erklärt das Terminal im <a href="https://support.apple.com/de-de/guide/terminal/welcome/mac">Terminal-Benutzerhandbuch</a>. Für Homebrew gilt die offizielle Seite <a href="https://brew.sh/de/">brew.sh</a> und die <a href="https://docs.brew.sh/Installation">Installationsdokumentation</a>.</p>
+
+  <p class="source-note"><a href="https://brew.sh/de/">Homebrew</a> · <a href="https://github.com/incoai/splash">Splash: Voraussetzungen</a> · <a href="../reference/0003-fehlerdiagnose.html">Fehlerdiagnose</a></p>
+
+  <div class="callout frag-nach"><p class="callout-title">Frag nach</p><ol><li>Markiere eine relevante Stelle und notiere deine Frage, deinen Einwand oder deinen Praxisfall als Kommentar – zum Beispiel eine Fehlermeldung aus deinem Terminal.</li><li>Öffne deinen eigenen KI-Agenten (zum Beispiel ChatGPT oder Claude) und gib ihm diese Seite als Kontext: Lass ihn die Lesson-Datei lesen oder füge den Seiteninhalt in den Chat ein.</li><li>Klicke oben rechts auf <strong>„Kopieren“</strong>. Dadurch landet die markierte Textstelle samt Kommentar als JSON in der Zwischenablage.</li><li>Füge dieses JSON in den Chat deines KI-Agenten ein.</li><li>Jetzt könnt ihr gezielt an deiner markierten Frage weiterarbeiten.</li></ol></div>
+
+  <footer class="lesson-footer"><button class="lesson-complete" type="button">Lesson als abgeschlossen markieren</button><div class="next"><strong>Nächster Schritt:</strong> <a href="0003-omlx-einrichten.html">oMLX installieren und starten →</a></div></footer>
+</article>
+<script src="../assets/course.js"></script>
+<script src="../assets/annotations.js"></script>
+</body>
+</html>
