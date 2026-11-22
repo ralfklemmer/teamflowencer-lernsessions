@@ -1,0 +1,36 @@
+/* Feedback button and dialog. Uses the course colour tokens, so light and dark mode follow the page. */
+/* Narrow viewports: an opaque bar at the bottom; the page reserves its height, so content can always
+   scroll clear of it. Wide viewports (>=1000px): the button sits in the free margin right of the
+   700px course column and never overlaps it. */
+body.has-feedback{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+.fb-bar{position:fixed;z-index:20;left:0;right:0;bottom:0;display:flex;justify-content:flex-end;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:var(--bg);border-top:1px solid var(--rail)}
+.fb-open{font:700 15px var(--body);color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:999px;
+  padding:10px 16px;cursor:pointer}
+@media (min-width:1000px){
+  body.has-feedback{padding-bottom:0}
+  .fb-bar{left:auto;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));padding:0;background:none;border:0}
+  .fb-open{box-shadow:0 4px 14px rgb(0 0 0 / .18)}
+}
+.fb-open:hover{background:var(--bg)}
+.fb-dialog{width:min(520px,calc(100vw - 32px));max-height:calc(100dvh - 32px);border:1px solid var(--rail);border-radius:16px;padding:0;
+  background:var(--paper);color:var(--ink);font:16px/1.45 var(--body)}
+.fb-dialog::backdrop{background:rgb(0 0 0 / .45)}
+.fb-form{display:flex;flex-direction:column;gap:12px;padding:18px}
+.fb-form h2{font:800 24px/1.1 var(--display);font-stretch:85%;margin:0}
+.fb-station{margin:0;color:var(--mute);font-size:14px}
+.fb-form label{font-weight:700}
+.fb-form textarea{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--rail);border-radius:10px;padding:10px;min-height:9em;resize:vertical;width:100%}
+.fb-form textarea:focus-visible{outline:3px solid var(--spec);outline-offset:2px}
+.fb-count{margin:-6px 0 0;color:var(--mute);font-size:13px;text-align:right}
+.fb-note{margin:0;color:var(--mute);font-size:14px}
+.fb-note a{color:var(--spec)}
+.fb-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+.fb-status{margin:0;min-height:1.45em;font-weight:700}
+.fb-status.ok{color:var(--tick)}
+.fb-status.err{color:var(--review)}
+.fb-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.fb-actions button{font:700 16px var(--body);border-radius:12px;padding:10px 16px;cursor:pointer;border:2px solid var(--ink);background:var(--ink);color:var(--bg)}
+.fb-actions button.fb-cancel{background:transparent;color:var(--ink);border-color:var(--rail)}
+.fb-actions button:disabled{opacity:.4;cursor:default}
