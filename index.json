@@ -2,6 +2,19 @@
   "schema_version": 2,
   "sessions": [
     {
+      "session_id": "3c2b490b-f95a-409c-b5f6-803ddb6f1028",
+      "slug": "der-agenten-loop",
+      "title": "Der Agenten-Loop",
+      "topics": [
+        "KI-Agenten",
+        "Coding-Agenten",
+        "Skills"
+      ],
+      "sort_order": 400,
+      "related_session_ids": [],
+      "related_youtube_urls": []
+    },
+    {
       "session_id": "5a2f4891-a205-4b38-ad51-e90aa3e211c0",
       "slug": "der-pocock-loop",
       "title": "Der Agenten-Loop",

@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Der Agenten-Loop</title>
+<meta name="description" content="Interaktive Lernsession in 10 Stationen: Wie du mit Matt Pococks Skills und einem Coding-Agenten von der Idee über Grillen, Spec und Tickets bis zum Review arbeitest. Beispiele mit Claude Code.">
+<link rel="canonical" href="https://teamflowencer.de/lernen/der-agenten-loop/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:title" content="Der Agenten-Loop">
+<meta property="og:description" content="Interaktive Lernsession in 10 Stationen: Grillen, Spec, Tickets, Umsetzen, Review und Projektwissen mit Matt Pococks Skills.">
+<meta property="og:url" content="https://teamflowencer.de/lernen/der-agenten-loop/">
+<meta property="og:image" content="https://teamflowencer.de/lernen/der-agenten-loop/assets/der-agenten-loop-thumbnail.jpg">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+<meta property="og:image:alt" content="Der Agenten-Loop als U-Bahn-Linie: Idee, Grillen, Spec, Tickets, Umsetzen, Review, Projektwissen">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="stylesheet" href="assets/feedback.css">
+<script src="assets/feedback.js" data-course="der-agenten-loop" data-endpoint="/wp-json/teamflowencer/v1/course-feedback" defer></script>
+<style>
+/* Layout: Lernpfad als U-Bahn-Linie. Eine Station pro Bildschirm: Bild links, Satz + Begriff + Frage rechts (Handy: untereinander). Szenen im Hochformat (400 breit), damit Schrift auf dem Handy lesbar bleibt. Jede Skill-Farbe bleibt in allen Stationen gleich. */
+/* Design: Tokens und Schriften aus dem Teach-Skill (styles.css), wie die anderen Lernsessions. Stationsfarben gedämpft passend zur Palette. Immer hell, auch bei dunklem System, wie die anderen Tutorials. */
+:root{
+  color-scheme:light;
+  --bg:#fbfaf7; --paper:#ffffff; --ink:#1a1a1a; --ink-soft:#444; --mute:#6b6b66; --rail:#d8d4cc;
+  --accent:#b4341f; --accent-soft:#f5e9e4; --on-accent:#ffffff; --code-bg:#f0ece4; --tint:#f4f1ea; --focus:#255f85;
+  --right-bg:#e8f3e0; --right-line:#5a8a3a; --right-ink:#2a4a1a; --wrong-bg:#f7e0e0;
+  --grill:#9a6516; --docs:#2a6f6a; --spec:#255f85; --tick:#2f6b3c; --agent:#6a4c93; --review:#b4341f; --hand:#9c3d6e;
+  --serif:'Iowan Old Style','Palatino Linotype',Palatino,'Book Antiqua',Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'SF Mono',Menlo,Consolas,monospace;
+  --display:var(--serif); --body:var(--serif);
+  --grill-s:color-mix(in srgb,var(--grill) 14%,var(--paper));
+  --docs-s:color-mix(in srgb,var(--docs) 13%,var(--paper));
+  --spec-s:color-mix(in srgb,var(--spec) 12%,var(--paper));
+  --tick-s:color-mix(in srgb,var(--tick) 13%,var(--paper));
+  --agent-s:color-mix(in srgb,var(--agent) 11%,var(--paper));
+  --review-s:color-mix(in srgb,var(--review) 11%,var(--paper));
+  --hand-s:color-mix(in srgb,var(--hand) 11%,var(--paper));
+  --mute-s:color-mix(in srgb,var(--mute) 24%,var(--paper));
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 var(--serif);-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:underline;text-decoration-color:var(--rail);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--accent)}
+.app{max-width:760px;margin:0 auto;padding-block:2.5rem 4rem;padding-left:max(2rem,env(safe-area-inset-left,0px));padding-right:max(2rem,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:1.5rem}
+header{display:flex;flex-direction:column;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:1.1rem}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font:600 1.45rem/1.15 var(--serif);margin:0;letter-spacing:-.01em}
+.meta{color:var(--mute);font:.8rem var(--sans)}
+.line{position:relative;display:flex;justify-content:space-between;align-items:center;padding:6px 2px}
+.line::before{content:"";position:absolute;left:12px;right:12px;top:50%;height:4px;margin-top:-2px;border-radius:2px;background:var(--rail)}
+.dot{position:relative;width:20px;height:20px;border-radius:50%;border:4px solid var(--c);background:var(--paper);cursor:pointer;padding:0;transition:transform .15s}
+.dot.done{background:var(--c)}
+.dot.cur{transform:scale(1.3);box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--c)}
+.dot:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+/* Station */
+/* Reihenfolge: Satz lesen, dann Bild per Klick, dann Begriffe, dann Quiz */
+.lesson{display:flex;flex-direction:column;gap:1.25rem}
+.side{display:contents}
+.lesson>*,.side>*{order:5}
+.lesson>.top{order:0;display:flex;flex-direction:column;gap:.5rem}
+.take{order:1}.stage{order:2}.ways{order:2}.terms{order:3}.quiz{order:4}
+.stage{position:relative}
+.stage.idle svg{visibility:hidden}
+.playbtn{display:none;position:absolute;inset:0;margin:auto;width:max-content;height:max-content;font:600 1rem var(--sans);padding:.75rem 1.4rem;border-radius:999px;border:2px solid var(--c);background:var(--paper);color:var(--ink);cursor:pointer}
+.stage.idle .playbtn{display:block}
+.eyebrow{margin:0;font:600 .75rem var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+h2{font:600 2.1rem/1.15 var(--serif);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.stage{margin:0;background:var(--paper);border:1px solid var(--rail);border-radius:6px;padding:10px;min-width:0}
+.stage svg{display:block;width:100%;height:auto}
+.take{margin:0;font-size:1.12rem;line-height:1.55;text-wrap:pretty}
+.take p{margin:0}.take ul{margin:.5rem 0 0;padding-left:1.5rem;display:flex;flex-direction:column;gap:.3rem}
+.take li::marker{color:var(--mute)}
+.take code,.why code,.terms code,.qq code,.opt code{font-family:var(--mono);font-size:.85em;background:var(--code-bg);color:var(--accent);padding:.1em .35em;border-radius:3px}
+.terms{margin:0;display:flex;flex-direction:column;gap:.5rem;font-size:.92rem;line-height:1.5;color:var(--ink-soft)}
+.terms div{border-left:3px solid var(--c);padding-left:.75rem}
+.terms b{color:var(--ink);font-family:var(--sans);font-weight:650;font-size:.95em}
+.quiz{display:flex;flex-direction:column;gap:.75rem;background:var(--paper);border:1px solid var(--rail);border-radius:6px;padding:1.25rem 1.5rem}
+.quiz .qq{margin:0;font-style:italic;font-size:1.05rem}
+.opts{display:grid;gap:.6rem}
+.opt{display:block;width:100%;font:.98rem/1.45 var(--serif);color:var(--ink);background:var(--bg);border:1px solid var(--rail);border-radius:4px;padding:.7rem 1rem;cursor:pointer;text-align:left;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--accent);background:var(--paper)}
+.opt.right{border-color:var(--right-line);background:var(--right-bg);color:var(--right-ink);font-weight:600}
+.opt.right::before{content:"✓ "}
+.opt.wrong{border-color:var(--accent);background:var(--wrong-bg);color:var(--accent);cursor:default}
+.why{margin:0;padding:.85rem 1rem;background:var(--tint);border-left:3px solid var(--accent);font-size:.92rem;color:var(--ink)}
+.nav{display:flex;gap:10px;justify-content:space-between;align-items:center}
+.btn{font:600 .92rem var(--sans);border-radius:4px;padding:.6rem 1rem;cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:var(--paper);color:var(--ink);border-color:var(--rail)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.ghost:disabled:hover{border-color:var(--rail);color:var(--ink)}
+/* Wegweiser */
+.ways{display:grid;grid-template-columns:1fr;gap:.6rem}
+.way{font:.98rem/1.45 var(--serif);text-align:left;color:var(--ink);background:var(--bg);border:1px solid var(--rail);border-radius:4px;padding:.7rem 1rem;cursor:pointer}
+.way:hover{border-color:var(--accent)}
+.way[aria-pressed="true"]{border-color:var(--ink);background:var(--paper);box-shadow:inset 3px 0 0 var(--accent)}
+.route{min-height:110px;background:var(--paper);border:1px solid var(--rail);border-radius:6px;padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.6rem;justify-content:center}
+.stops{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.stop{display:inline-flex;align-items:center;gap:8px;font:500 .88rem var(--mono);padding:5px 12px 5px 8px;border-radius:999px;background:color-mix(in srgb,var(--c) 13%,var(--paper));animation:pop .35s both}
+.stop::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--c);flex:none}
+.join{width:22px;height:4px;border-radius:2px;background:var(--rail)}
+.route .hint{margin:0;color:var(--ink-soft);font-size:.92rem}
+.score{margin:0;font:600 1.05rem var(--sans)}
+.small{color:var(--mute);font-size:.86rem;margin:0}
+.cmds{border-collapse:collapse;margin-top:.5rem;font-size:.88rem;color:var(--ink)}
+.cmds th,.cmds td{text-align:left;vertical-align:top;padding:.3rem .9rem .3rem 0;border-bottom:1px solid var(--rail)}
+.cmds thead th{font:600 .7rem var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid var(--ink)}
+.cmds tbody th{font:600 .88rem var(--sans)}
+footer{border-top:1px solid var(--rail);padding-top:1.25rem;color:var(--mute);font:.85rem/1.5 var(--sans)}
+@media (max-width:640px){
+  .app{padding-block:1.5rem 3rem;padding-left:max(1.25rem,env(safe-area-inset-left,0px));padding-right:max(1.25rem,env(safe-area-inset-right,0px))}
+  h2{font-size:1.7rem}
+  .take{font-size:1.05rem}
+  .quiz{padding:1rem 1.1rem}
+  .btn{padding:.55rem .8rem}
+}
+/* SVG */
+svg text{fill:var(--ink);font-family:var(--sans)}
+.lb{font:700 17px var(--sans);text-anchor:middle}
+.lbs{font:700 15px var(--sans)}
+.sm{font-size:15px;fill:var(--mute)!important}
+.t15{font-size:15px}
+.bold{font-weight:700}
+.mono{font-family:var(--mono)!important}
+.mid{text-anchor:middle}
+.end{text-anchor:end}
+.rail{fill:none;stroke:var(--rail);stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+.edge{stroke:var(--rail);stroke-width:3;fill:none}
+.panel{fill:var(--bg);stroke:var(--rail);stroke-width:1.5}
+.s,.pd,.po,.out,.grow,.ping,.b1,.b2,.b3,.sf,.f7{transform-box:fill-box;transform-origin:center}
+.ping{opacity:0}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes appear{from{opacity:0}to{opacity:1}}
+@keyframes off{from{opacity:1}to{opacity:0}}
+@keyframes dim{to{opacity:.16}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes ping{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(var(--k,2.3))}}
+@keyframes out{to{opacity:0;transform:translateY(var(--y,0px)) scaleY(var(--sy,1))}}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.play .s{animation:pop .45s cubic-bezier(.2,.8,.2,1) var(--d,0s) both}
+.play .appear{animation:appear .2s var(--d,0s) both}
+.play .pd{animation:pop .45s var(--d) both,dim .5s var(--e) forwards}
+.play .po{animation:pop .3s var(--d) both,off .3s var(--e) forwards}
+.play .dm{animation:dim .6s var(--d) forwards}
+.play .draw{stroke-dasharray:1;animation:draw .9s ease-out var(--d,0s) both}
+.play .ping{animation:ping 1.2s ease-out var(--d,0s) var(--n,1) forwards}
+.play .out{animation:out .5s ease-in var(--d) forwards}
+/* Szene 3: Begriff fliegt ins Glossar, Entscheidungen testen die Hürden */
+@keyframes b1{to{transform:translate(5px,298px) scale(.4);opacity:0}}
+@keyframes b2{20%{transform:translate(94px,80px)}80%{transform:translate(94px,240px)}100%{transform:translate(114px,298px) scale(.4);opacity:0}}
+@keyframes b3{30%,70%{transform:translate(-26px,90px)}100%{transform:none}}
+.play .b1{animation:b1 1.2s ease-in-out 1s both}
+.play .b2{animation:b2 3s linear 2.6s both}
+.play .b3{animation:b3 2.4s ease-in-out 6s both,dim .6s 10.4s forwards}
+/* Szene 5: Chat fließt in die Spec */
+@keyframes sf{to{transform:translate(var(--x),var(--y)) scale(.3);opacity:0}}
+.play .sf{animation:sf .8s ease-in var(--d) both}
+/* Szene 9: Handoff-Datei reist */
+@keyframes f7{to{transform:translate(0,150px) scale(.8)}}
+.play .f7{animation:pop .35s 3.7s both,f7 .9s ease-in-out 4.3s forwards}
+.shake{animation:shake .3s}
+@media (prefers-reduced-motion:reduce){
+  .play *,.stop{animation-duration:1ms!important;animation-delay:0s!important;animation-iteration-count:1!important}
+  .dot{transition:none}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--mute)"/></marker>
+  </defs>
+</svg>
+
+<div class="app">
+<header>
+  <div class="brand">
+    <h1>Der Agenten-Loop</h1>
+    <span class="meta">10 Stationen · etwa 12 Minuten</span>
+  </div>
+  <nav class="line" id="line" aria-label="Stationen"></nav>
+</header>
+
+<main id="main">
+
+<!-- 1 LOOP -->
+<section class="lesson" id="loop" data-c="var(--ink)" hidden>
+  <div class="top"><p class="eyebrow"></p><h2>Ein Ablauf statt Prompts</h2></div>
+  <figure class="stage">
+    <svg viewBox="0 0 400 360" role="img" aria-label="Linie: Idee, Grillen, Spec, Tickets, Umsetzen, Review, Projektwissen, zurück zu Grillen">
+      <path class="rail draw" pathLength="1" style="--d:0s" d="M40 70 H330 Q360 70 360 100 V280 Q360 310 330 310 H180 Q150 310 150 280 V70"/>
+      <g class="s" style="--d:.2s"><circle cx="40" cy="70" r="11" style="fill:var(--paper);stroke:var(--mute);stroke-width:4"/><text x="40" y="44" class="lb">Idee</text></g>
+      <g class="s" style="--d:.35s"><circle cx="150" cy="70" r="14" style="fill:var(--paper);stroke:var(--grill);stroke-width:6"/><text x="150" y="44" class="lb">Grillen</text></g>
+      <g class="s" style="--d:.5s"><circle cx="255" cy="70" r="11" style="fill:var(--spec);stroke:var(--paper);stroke-width:3"/><text x="255" y="44" class="lb">Spec</text></g>
+      <g class="s" style="--d:.65s"><circle cx="360" cy="125" r="11" style="fill:var(--tick);stroke:var(--paper);stroke-width:3"/><text x="342" y="131" class="lb end">Tickets</text></g>
+      <g class="s" style="--d:.8s"><circle cx="360" cy="190" r="11" style="fill:var(--agent);stroke:var(--paper);stroke-width:3"/><text x="342" y="196" class="lb end">Umsetzen</text></g>
+      <g class="s" style="--d:.95s"><circle cx="360" cy="255" r="11" style="fill:var(--review);stroke:var(--paper);stroke-width:3"/><text x="342" y="261" class="lb end">Review</text></g>
+      <g class="s" style="--d:1.1s"><circle cx="255" cy="310" r="11" style="fill:var(--docs);stroke:var(--paper);stroke-width:3"/><text x="255" y="344" class="lb">Projektwissen</text></g>
+      <circle cx="150" cy="70" r="14" class="ping" style="--d:7.3s;--n:2;fill:none;stroke:var(--grill);stroke-width:3"/>
+      <circle r="9" class="appear" style="--d:1.2s;fill:var(--ink)">
+        <animateMotion dur="6s" begin="indefinite" fill="freeze" data-d="1.2" path="M40 70 H330 Q360 70 360 100 V280 Q360 310 330 310 H180 Q150 310 150 280 V70"/>
+      </circle>
+    </svg>
+  </figure>
+  <div class="side">
+    <p class="take">Software entsteht hier in einem sicheren Prozess, Station für Station wie auf einer Linie: Grillen, Spec, Tickets, Umsetzen, Review. Jeden Schritt startest du selbst per Slash-Befehl, der Agent ruft ihn nie von allein auf. Jeder Durchlauf verbessert das Projektwissen.</p>
+    <div class="terms"><div><b>Schritt:</b> eine Station der Linie. Ein Schritt kann eine oder mehrere Chat-Sessions dauern.</div><div><b>Projektwissen:</b> Glossar, Entscheidungen (ADRs) und Anweisungen wie <code>CLAUDE.md</code> bzw. <code>AGENTS.md</code>. Der Agent liest es bei jedem Lauf.</div></div>
+    <div class="quiz">
+      <p class="qq">Der Agent hat letzte Woche einen Fachbegriff falsch benutzt. Was sorgt dafür, dass er es heute richtig macht?</p>
+      <div class="opts"><button class="opt">Ein längerer Prompt</button><button class="opt" data-ok>Das Projektwissen aus dem letzten Lauf</button><button class="opt">Ein stärkeres Modell</button></div>
+      <p class="why" hidden>Prompts sind Wegwerfware. Was im Repo steht, liest der Agent jedes Mal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2 GRILLING -->
+<section class="lesson" id="grillen" data-c="var(--grill)" hidden>
+  <div class="top"><p class="eyebrow"></p><h2>Der Agent fragt dich aus</h2></div>
+  <figure class="stage">
+    <svg viewBox="0 0 400 400" role="img" aria-label="Runde 1: Der Agent stellt drei Fragen mit Empfehlung, du antwortest mit Postgres statt SQLite, sonst ja. Runde 2: Daraus folgen zwei neue Fragen, die Node-Version hat der Agent selbst im Code gefunden. Am Ende ist nichts mehr offen.">
+      <g class="s" style="--d:0s"><rect x="10" y="6" width="78" height="24" rx="12" style="fill:var(--grill)"/><text x="49" y="23" class="mid bold" style="font-size:13px;fill:var(--paper)">Runde 1</text></g>
+      <g class="s" style="--d:.3s"><rect x="10" y="36" width="300" height="94" rx="12" style="fill:var(--agent-s);stroke:var(--agent);stroke-width:1.5"/><text x="24" y="58" class="bold" style="font-size:14px;fill:var(--agent)">Agent fragt, mit Empfehlung:</text></g>
+      <text x="24" y="82" class="t15 s" style="--d:.6s">Q1 Datenbank? <tspan style="fill:var(--grill)">➜ SQLite</tspan></text>
+      <text x="24" y="102" class="t15 s" style="--d:.9s">Q2 Login nötig? <tspan style="fill:var(--grill)">➜ ja</tspan></text>
+      <text x="24" y="122" class="t15 s" style="--d:1.2s">Q3 Mobile-App? <tspan style="fill:var(--grill)">➜ später</tspan></text>
+      <g class="s" style="--d:2s"><rect x="160" y="140" width="230" height="36" rx="18" style="fill:var(--ink)"/><text x="275" y="163" class="mid bold" style="font-size:14px;fill:var(--bg)">Du: Q1 Postgres, sonst ja</text></g>
+      <g class="s" style="--d:2.8s"><rect x="10" y="196" width="78" height="24" rx="12" style="fill:var(--grill)"/><text x="49" y="213" class="mid bold" style="font-size:13px;fill:var(--paper)">Runde 2</text><text x="98" y="213" class="sm" style="font-size:14px">folgt aus deinen Antworten</text></g>
+      <g class="s" style="--d:3.1s"><rect x="10" y="226" width="300" height="84" rx="12" style="fill:var(--agent-s);stroke:var(--agent);stroke-width:1.5"/></g>
+      <text x="24" y="250" class="t15 s" style="--d:3.4s">Q4 Postgres lokal per Docker? <tspan style="fill:var(--grill)">➜ ja</tspan></text>
+      <text x="24" y="272" class="t15 s" style="--d:3.7s">Q5 Login per Mail-Link? <tspan style="fill:var(--grill)">➜ ja</tspan></text>
+      <g class="s" style="--d:4.1s"><circle cx="29" cy="290" r="6" style="fill:none;stroke:var(--mute);stroke-width:2"/><path d="M33 294 L38 299" style="stroke:var(--mute);stroke-width:2.5;stroke-linecap:round"/><text x="44" y="295" class="sm" style="font-size:14px">Node-Version: selbst im Code gefunden</text></g>
+      <path class="draw" pathLength="1" style="--d:2.8s;fill:none;stroke:var(--grill);stroke-width:2;stroke-dasharray:1" d="M330 178 Q350 215 316 246" marker-end="url(#ar)"/>
+      <g class="s" style="--d:4.6s"><rect x="290" y="318" width="100" height="34" rx="17" style="fill:var(--ink)"/><text x="340" y="340" class="mid bold" style="font-size:14px;fill:var(--bg)">Du: ja</text></g>
+      <g class="s" style="--d:5.3s"><rect x="60" y="360" width="280" height="34" rx="17" style="fill:var(--grill)"/><text x="200" y="382" class="lbs mid" style="fill:var(--paper)">Nichts mehr offen ✓</text></g>
+    </svg>
+  </figure>
+  <div class="side">
+    <p class="take">Beim Grillen fragt dich der Agent zu deinem Plan aus, in Runden. Jede Frage bringt seine Empfehlung mit, du sagst ja oder entscheidest anders. Deine Antworten erzeugen die Fragen der nächsten Runde. Was schon im Code steht, schaut er selbst nach. Fertig ist es, wenn nichts mehr offen ist.</p>
+    <div class="terms"><div><b>Grillen:</b> Befehl <code>/grilling</code>, oder <code>/grill-with-docs</code>, wenn dabei Dateien entstehen sollen (nächste Station).</div></div>
+    <div class="quiz">
+      <p class="qq">Der Agent will wissen, welche Datenbank euer Projekt heute schon nutzt. Fragt er dich?</p>
+      <div class="opts"><button class="opt">Ja, er fragt mich</button><button class="opt" data-ok>Nein, er sieht selbst im Code nach</button></div>
+      <p class="why" hidden>Was im Code steht, sucht er selbst. Dich fragt er nur, was noch zu entscheiden ist.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 GRILL-WITH-DOCS -->
+<section class="lesson" id="mit-docs" data-c="var(--docs)" hidden>
+  <div class="top"><p class="eyebrow"></p><h2>Was landet in Dateien?</h2></div>
+  <figure class="stage">
+    <svg viewBox="0 0 400 430" role="img" aria-label="Aus dem Chat geht der Begriff Mandant direkt ins Glossar. Die Entscheidung Postgres passiert alle drei Stufen des ADR-Filters und wird ein ADR. Buttons blau bleibt an der ersten Stufe hängen, bleibt nur im Chat und ist nach clear verloren. Hinweis: vorher mit to-spec sichern.">
+      <rect x="10" y="10" width="380" height="96" rx="14" class="panel"/>
+      <text x="22" y="30" class="sm" style="font-size:13px">Chat</text>
+      <text x="182" y="142" class="lbs end" style="fill:var(--docs)">ADR-Filter</text>
+      <path d="M190 132 H390 L315 290 H265 Z" style="fill:var(--docs-s);stroke:var(--docs);stroke-width:2"/>
+      <path d="M207 166 H374 M225 205 H355 M244 245 H336" style="stroke:var(--docs);stroke-width:3;stroke-dasharray:6 5"/>
+      <text x="182" y="171" class="end" style="font-size:14px">schwer umkehrbar</text>
+      <text x="182" y="210" class="end" style="font-size:14px">überraschend</text>
+      <text x="182" y="250" class="end" style="font-size:14px">echte Abwägung</text>
+      <path class="po" style="--d:3.45s;--e:5.6s;stroke:var(--tick);stroke-width:5" d="M207 166 H374"/>
+      <path class="po" style="--d:3.9s;--e:5.6s;stroke:var(--tick);stroke-width:5" d="M225 205 H355"/>
+      <path class="po" style="--d:4.35s;--e:5.6s;stroke:var(--tick);stroke-width:5" d="M244 245 H336"/>
+      <path class="po" style="--d:6.75s;--e:8.2s;stroke:var(--review);stroke-width:5" d="M207 166 H374"/>
+      <text x="290" y="192" class="mid bold po" style="--d:6.75s;--e:8.2s;font-size:14px;fill:var(--review)">✕ leicht änderbar</text>
+      <g class="s" style="--d:0s"><rect x="10" y="330" width="150" height="56" rx="10" style="fill:var(--docs-s);stroke:var(--docs);stroke-width:2"/><text data-locked x="85" y="354" class="mid mono" style="font-size:14px">GLOSSARY.md</text></g>
+      <text x="85" y="376" class="mid bold s" style="--d:2.2s;font-size:13px;fill:var(--docs)">+ Mandant</text>
+      <g class="s" style="--d:0s"><rect x="230" y="330" width="160" height="56" rx="10" style="fill:var(--docs-s);stroke:var(--docs);stroke-width:2"/><text data-locked x="310" y="354" class="mid mono" style="font-size:14px">docs/adr/</text></g>
+      <text x="310" y="376" class="mid bold s" style="--d:5.6s;font-size:13px;fill:var(--docs)">+ Postgres</text>
+      <text x="316" y="98" class="mid po" style="--d:8.6s;--e:10s;font-size:13px;fill:var(--mute)">bleibt nur im Chat</text>
+      <g class="s" style="--d:10s"><rect x="22" y="44" width="100" height="32" rx="10" style="fill:var(--ink)"/><text data-locked x="72" y="66" class="mid mono" style="font-size:15px;fill:var(--bg)">/clear</text></g>
+      <text x="316" y="98" class="mid bold s" style="--d:10.5s;font-size:13px;fill:var(--review)">verloren</text>
+      <text x="85" y="404" class="sm mid s" style="--d:10.8s;font-size:13px">bleibt</text>
+      <text x="310" y="404" class="sm mid s" style="--d:10.8s;font-size:13px">bleibt</text>
+      <text x="200" y="424" class="mid bold s" style="--d:11.3s;font-size:14px">Retten, bevor du leerst: <tspan data-locked>/to-spec</tspan> (Station 5)</text>
+      <g class="b3"><rect x="254" y="44" width="124" height="32" rx="16" style="fill:var(--paper);stroke:var(--ink);stroke-width:1.5"/><text x="316" y="65" class="mid" style="font-size:14px">Buttons blau</text></g>
+      <g class="b2"><rect x="146" y="44" width="100" height="32" rx="16" style="fill:var(--paper);stroke:var(--ink);stroke-width:1.5"/><text x="196" y="65" class="mid" style="font-size:14px">Postgres</text></g>
+      <g class="b1"><rect x="22" y="44" width="116" height="32" rx="16" style="fill:var(--docs-s);stroke:var(--docs);stroke-width:1.5"/><text x="80" y="65" class="mid" style="font-size:14px">Begriff: Mandant</text></g>
+    </svg>
+  </figure>
+  <div class="side">
+    <p class="take"><code>/grill-with-docs</code> grillt und schreibt dabei Dateien. Fachbegriffe landen sofort im Glossar. Entscheidungen laufen durch einen Filter mit drei Stufen: schwer rückgängig zu machen, ohne Kontext überraschend, eine echte Abwägung. Nur was alle drei passiert, wird eine eigene Datei, ein ADR. Der Rest steht nur im Chat und ist nach <code>/clear</code> weg, wenn du ihn nicht vorher sicherst.</p>
+    <div class="terms">
+      <div><b>ADR:</b> Architecture Decision Record, eine kurze Notiz zu einer Entscheidung und ihrem Warum.</div>
+      <div><b><code>/clear</code>:</b> leert den Chat komplett. Mehr dazu in Station 9.</div>
+      <div><b>Bauweise:</b> <code>/grill-with-docs</code> = <code>/grilling</code> + <code>/domain-modeling</code>.</div>
+    </div>
+    <div class="quiz">
+      <p class="qq">Beim Grillen eurer Web-App entscheidet ihr zwei Dinge: die Farbe der Buttons und Postgres statt SQLite als Datenbank. Welche Entscheidung wird ein ADR?</p>
+      <div class="opts"><button class="opt">Beide</button><button class="opt" data-ok>Nur die Datenbank</button><button class="opt">Nur die Button-Farbe</button></div>
+      <p class="why" hidden>Eine Farbe änderst du in einer Minute, eine Datenbank nicht. Die Button-Farbe bleibt im Chat, bis du sie mit <code>/to-spec</code> sicherst.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 ABZWEIG -->
+<section class="lesson" id="abzweig" data-c="var(--hand)" hidden>
+  <div class="top"><p class="eyebrow"></p><h2>Abzweigen, nicht anhalten</h2></div>
+  <figure class="stage">
+    <svg viewBox="0 0 400 370" role="img" aria-label="Deine Session läuft senkrecht weiter. Eine Handoff-Datei zweigt in eine zweite Session ab, dort beantwortet ein Prototyp die Frage. Die Antwort kommt zurück, der Prototyp wird weggeworfen.">
+      <path d="M60 20 V360" style="fill:none;stroke:var(--grill);stroke-width:8;stroke-linecap:round"/>
+      <text x="76" y="36" class="lbs">Deine Session</text>
+      <path class="s" style="--d:.5s;fill:none;stroke:var(--hand);stroke-width:5;stroke-dasharray:10 8;stroke-linecap:round" d="M60 90 H300 Q330 90 330 120 V170 M330 220 V270 Q330 300 300 300 H60"/>
+      <circle cx="60" cy="90" r="9" style="fill:var(--paper);stroke:var(--ink);stroke-width:4"/>
+      <circle cx="60" cy="300" r="9" style="fill:var(--paper);stroke:var(--ink);stroke-width:4"/>
+      <text data-locked x="170" y="80" class="mono mid s t15" style="--d:.6s;fill:var(--hand)">/handoff</text>
+      <text x="318" y="150" class="sm end s" style="--d:.6s">zweite Session</text>
+      <g class="pd" style="--d:2.2s;--e:5.2s"><rect x="275" y="170" width="110" height="50" rx="8" style="fill:var(--paper);stroke:var(--ink);stroke-width:2;stroke-dasharray:6 4"/><text data-locked x="330" y="200" class="mid mono" style="font-size:14px">/prototype</text></g>
+      <text x="266" y="200" class="sm end s" style="--d:5.3s">weggeworfen</text>
+      <text x="76" y="350" class="sm s" style="--d:4.9s">läuft weiter</text>
+      <g class="po" style="--d:.9s;--e:2.3s"><path d="M-14 -18 H6 L14 -10 V18 H-14 Z" style="fill:var(--hand-s);stroke:var(--hand);stroke-width:2"/><path d="M-7 -4 H7 M-7 3 H7 M-7 10 H3" style="stroke:var(--hand);stroke-width:2"/>
+        <animateMotion dur="1.4s" begin="indefinite" fill="freeze" data-d=".9" path="M60 90 H300 Q330 90 330 120 V170"/></g>
+      <g class="appear" style="--d:3.2s"><rect x="-40" y="-15" width="80" height="30" rx="15" style="fill:var(--tick)"/><text x="0" y="5" class="mid bold" style="font-size:14px;fill:var(--paper)">Antwort</text>
+        <animateMotion dur="1.6s" begin="indefinite" fill="freeze" data-d="3.2" path="M330 220 V270 Q330 300 300 300 H110"/></g>
+      <circle r="10" class="appear" style="--d:0s;fill:var(--ink)">
+        <animateMotion dur="6.5s" begin="indefinite" fill="freeze" data-d="0" path="M60 20 V360"/></circle>
+    </svg>
+  </figure>
+  <div class="side">
+    <p class="take">Manches willst du nicht beschreiben, sondern sehen und ausprobieren: Wie fühlt sich der Ablauf an, trägt das Datenmodell? Dafür brauchst du laufenden Code. Du schickst genau diese Frage in eine zweite Session, lässt dort einen Prototyp bauen und arbeitest selbst weiter.</p>
+    <div class="terms">
+      <div><b><code>/handoff</code>:</b> schreibt den Stand in eine Datei. Die zweite Session (eigenes Terminal, eigener Ordner) liest sie.</div>
+      <div><b><code>/prototype</code>:</b> baut Code zum Anschauen und Ausprobieren, der genau eine Frage beantwortet. Die Antwort bringst du in deine Session zurück.</div>
+    </div>
+    <div class="quiz">
+      <p class="qq">Was passiert mit dem Prototyp-Code?</p>
+      <div class="opts"><button class="opt">Wird der erste Produkt-Entwurf</button><button class="opt" data-ok>Weg damit, nur die Antwort zählt</button></div>
+      <p class="why" hidden>Ein Prototyp macht eine Unbekannte billig sichtbar, mehr nicht.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5 TO-SPEC -->
+<section class="lesson" id="spec" data-c="var(--spec)" hidden>
+  <div class="top"><p class="eyebrow"></p><h2>Entscheidungen festhalten</h2></div>
+  <figure class="stage">
+    <svg viewBox="0 0 400 420" role="img" aria-label="Zuerst bestätigst du, wo getestet wird: an der obersten Schicht UI. Dann fließt der Chat in eine Spec mit sechs Abschnitten, die als Issue mit ready-for-agent in den Tracker geht.">
+      <rect x="10" y="10" width="150" height="170" rx="14" class="panel"/>
+      <text x="22" y="32" class="sm">Chat</text>
+      <rect class="sf" style="--d:2.8s;--x:123px;--y:249px;fill:var(--grill-s)" x="22" y="44" width="110" height="22" rx="11"/>
+      <rect class="sf" style="--d:2.92s;--x:135.5px;--y:217px;fill:var(--grill-s)" x="22" y="76" width="85" height="22" rx="11"/>
+      <rect class="sf" style="--d:3.04s;--x:118px;--y:185px;fill:var(--grill-s)" x="22" y="108" width="120" height="22" rx="11"/>
+      <rect class="sf" style="--d:3.16s;--x:130.5px;--y:153px;fill:var(--grill-s)" x="22" y="140" width="95" height="22" rx="11"/>
+      <g class="s" style="--d:0s">
+        <rect x="200" y="60" width="190" height="32" rx="6" style="fill:var(--paper);stroke:var(--rail);stroke-width:2"/>
+        <rect x="200" y="100" width="190" height="32" rx="6" style="fill:var(--paper);stroke:var(--rail);stroke-width:2"/>
+        <rect x="200" y="140" width="190" height="32" rx="6" style="fill:var(--paper);stroke:var(--rail);stroke-width:2"/>
+      </g>
+      <g class="s" style="--d:.5s"><text x="284" y="38" class="lbs end">Test</text><path d="M295 18 V54" style="stroke:var(--mute);stroke-width:2.5" marker-end="url(#ar)"/></g>
+      <rect class="s" style="--d:.9s;fill:var(--tick-s);stroke:var(--tick);stroke-width:3" x="200" y="60" width="190" height="32" rx="6"/>
+      <text x="212" y="81" class="t15">UI</text><text x="212" y="121" class="t15">Logik</text><text x="212" y="161" class="t15">Daten</text>
+      <text x="380" y="81" class="end bold s t15" style="--d:1.2s;fill:var(--tick)">Test-Schnittstelle</text>
+      <text x="295" y="204" class="mid bold s t15" style="--d:1.9s;fill:var(--tick)">✓ du bestätigst</text>
+      <g class="s" style="--d:2.6s"><rect x="10" y="230" width="380" height="140" rx="10" style="fill:var(--spec-s);stroke:var(--spec);stroke-width:2"/><text x="26" y="258" class="lbs" style="font-size:18px">Spec</text></g>
+      <text x="26" y="292" class="s t15" style="--d:3.7s">Problem</text>
+      <text x="26" y="320" class="s t15" style="--d:3.85s">Lösung</text>
+      <text x="26" y="348" class="s t15" style="--d:4s">User Stories</text>
+      <text x="210" y="292" class="s t15" style="--d:4.15s">Entscheidungen</text>
+      <text x="210" y="320" class="s t15" style="--d:4.3s">Tests</text>
+      <text x="210" y="348" class="s t15" style="--d:4.45s">Out of Scope</text>
+      <g class="s" style="--d:4.9s"><rect x="10" y="384" width="170" height="28" rx="14" style="fill:var(--spec)"/><text data-locked x="95" y="403" class="mid mono" style="font-size:13px;fill:var(--paper)">ready-for-agent</text><text x="192" y="403" class="sm">→ Issue im Tracker</text></g>
+    </svg>
+  </figure>
+  <div class="side">
+    <p class="take"><code>/to-spec</code> schreibt die Entscheidungen auf, die ihr beim Grillen schon getroffen habt, als eine Spec. Neues entscheidet es nicht, und es stellt keine neuen Fragen. Einzige Rückfrage vorher: An welcher Test-Schnittstelle wird getestet? Lohnt sich, wenn die Arbeit nicht in eine Session passt.</p>
+    <div class="terms">
+      <div><b>Test-Schnittstelle</b> (englisch Seam): die öffentliche Stelle, an der ein Test das Verhalten von außen prüft. Ideal ist eine einzige, möglichst weit außen.</div>
+      <div><b>Tracker:</b> GitHub-Issues oder Markdown-Dateien im Repo, festgelegt per <code>/setup-matt-pocock-skills</code>.</div>
+    </div>
+    <div class="quiz">
+      <p class="qq">Ein Feature braucht geschätzt drei Sessions. Was kommt nach dem Grillen?</p>
+      <div class="opts"><button class="opt">Direkt umsetzen</button><button class="opt" data-ok><code>/to-spec</code>, dann <code>/to-tickets</code></button></div>
+      <p class="why" hidden>Bleib dafür im selben Chat: Die Spec braucht den ganzen Gesprächsverlauf.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 TICKETS -->
+<section class="lesson" id="tickets" data-c="var(--tick)" hidden>
+  <div class="top"><p class="eyebrow"></p><h2>Vertikal schneiden</h2></div>
+  <figure class="stage">
+    <svg viewBox="0 0 400 330" role="img" aria-label="Eine waagerechte Scheibe nur durch die Datenschicht wird verworfen. Vier senkrechte Tickets gehen durch UI, Logik und Daten und werden nacheinander erledigt. Die Spec bleibt.">
+      <g class="s" style="--d:0s"><rect x="10" y="10" width="90" height="36" rx="8" style="fill:var(--spec-s);stroke:var(--spec);stroke-width:2"/><text x="55" y="34" class="lbs mid">Spec</text></g>
+      <rect class="ping" style="--d:5.8s;--n:2;--k:1.25;fill:none;stroke:var(--spec);stroke-width:3" x="10" y="10" width="90" height="36" rx="8"/>
+      <text x="112" y="34" class="sm s" style="--d:5.8s">bleibt als Referenz</text>
+      <rect x="64" y="70" width="326" height="48" rx="8" style="fill:var(--paper);stroke:var(--rail);stroke-width:1.5"/>
+      <rect x="64" y="130" width="326" height="48" rx="8" style="fill:var(--paper);stroke:var(--rail);stroke-width:1.5"/>
+      <rect x="64" y="190" width="326" height="48" rx="8" style="fill:var(--paper);stroke:var(--rail);stroke-width:1.5"/>
+      <text x="10" y="99" class="sm">UI</text><text x="10" y="159" class="sm">Logik</text><text x="10" y="219" class="sm">Daten</text>
+      <g class="po" style="--d:.3s;--e:1.5s"><rect x="120" y="193" width="266" height="42" rx="6" style="fill:var(--review-s);stroke:var(--review);stroke-width:3"/><text x="253" y="220" class="lbs mid" style="fill:var(--review)">✕ nur eine Schicht</text></g>
+      <rect class="pd" style="--d:1.8s;--e:3.5s;fill:var(--tick-s);stroke:var(--tick);stroke-width:2.5" x="130" y="62" width="54" height="184" rx="8"/>
+      <rect class="pd" style="--d:2.05s;--e:4.1s;fill:var(--tick-s);stroke:var(--tick);stroke-width:2.5" x="192" y="62" width="54" height="184" rx="8"/>
+      <rect class="pd" style="--d:2.3s;--e:4.7s;fill:var(--tick-s);stroke:var(--tick);stroke-width:2.5" x="254" y="62" width="54" height="184" rx="8"/>
+      <rect class="pd" style="--d:2.55s;--e:5.3s;fill:var(--tick-s);stroke:var(--tick);stroke-width:2.5" x="316" y="62" width="54" height="184" rx="8"/>
+      <text x="157" y="270" class="lbs mid s" style="--d:1.8s">#1</text>
+      <text x="219" y="270" class="lbs mid s" style="--d:2.05s">#2</text>
+      <text x="281" y="270" class="lbs mid s" style="--d:2.3s">#3</text>
+      <text x="343" y="270" class="lbs mid s" style="--d:2.55s">#4</text>
+      <g class="s" style="--d:3.2s"><circle cx="157" cy="304" r="14" style="fill:var(--tick)"/><text x="157" y="310" class="lbs mid" style="fill:var(--paper)">✓</text></g>
+      <g class="s" style="--d:3.8s"><circle cx="219" cy="304" r="14" style="fill:var(--tick)"/><text x="219" y="310" class="lbs mid" style="fill:var(--paper)">✓</text></g>
+      <g class="s" style="--d:4.4s"><circle cx="281" cy="304" r="14" style="fill:var(--tick)"/><text x="281" y="310" class="lbs mid" style="fill:var(--paper)">✓</text></g>
+      <g class="s" style="--d:5s"><circle cx="343" cy="304" r="14" style="fill:var(--tick)"/><text x="343" y="310" class="lbs mid" style="fill:var(--paper)">✓</text></g>
+    </svg>
+  </figure>
+  <div class="side">
+    <p class="take"><code>/to-tickets</code> zerlegt die Spec in Tickets. Jedes Ticket ist ein vertikaler Schnitt durch alle technischen Schichten. Die Tickets werden nacheinander erledigt und geschlossen. Die Spec bleibt als Referenz, bis das ganze Feature fertig ist, danach kann sie weg.</p>
+    <div class="terms"><div><b>Ticket:</b> eine Scheibe, die für sich testbar ist und in eine frische Session passt. Es liegt im selben Tracker wie die Spec.</div></div>
+    <div class="quiz">
+      <p class="qq">Welches Ticket ist gut?</p>
+      <div class="opts"><button class="opt">Erst die ganze Datenschicht</button><button class="opt" data-ok>Ein dünner Durchstich durch alle Schichten</button></div>
+      <p class="why" hidden>Nur ein Durchstich lässt sich allein vorführen und prüfen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 UMSETZEN -->
+<section class="lesson" id="umsetzen" data-c="var(--agent)" hidden>
+  <div class="top"><p class="eyebrow"></p><h2>Ein Ticket umsetzen</h2></div>
+  <figure class="stage">
+    <svg viewBox="0 0 400 425" role="img" aria-label="Ticket 2 geht in eine optionale Sandbox. Dort läuft implement: Test rot, Code, Test grün im Kreis, dann alle Tests, code-review und Commit. Heraus kommt ein Branch mit Commits, den du prüfst.">
+      <g class="s" style="--d:0s"><rect x="140" y="8" width="120" height="36" rx="8" style="fill:var(--tick-s);stroke:var(--tick);stroke-width:2"/><text x="200" y="31" class="mid bold t15">Ticket #2</text></g>
+      <path d="M200 46 V68" style="stroke:var(--mute);stroke-width:2.5" marker-end="url(#ar)"/>
+      <g class="s" style="--d:.2s"><rect x="10" y="74" width="380" height="262" rx="14" style="fill:var(--agent-s);stroke:var(--agent);stroke-width:2.5;stroke-dasharray:9 6"/><text x="24" y="98" class="lbs" style="fill:var(--agent)">Sandbox · optional</text></g>
+      <text data-locked x="200" y="134" class="mid mono s" style="--d:.4s;font-size:17px">/implement</text>
+      <g class="s" style="--d:.6s">
+        <circle cx="100" cy="190" r="30" style="fill:var(--review-s);stroke:var(--review);stroke-width:2.5"/><text x="100" y="195" class="mid bold" style="font-size:14px">Test rot</text>
+        <circle cx="200" cy="190" r="30" style="fill:var(--paper);stroke:var(--ink);stroke-width:2.5"/><text x="200" y="195" class="mid bold" style="font-size:14px">Code</text>
+        <circle cx="300" cy="190" r="30" style="fill:var(--tick-s);stroke:var(--tick);stroke-width:2.5"/><text x="300" y="195" class="mid bold" style="font-size:14px">grün</text>
+        <path d="M132 190 H164" style="stroke:var(--mute);stroke-width:2.5" marker-end="url(#ar)"/>
+        <path d="M232 190 H264" style="stroke:var(--mute);stroke-width:2.5" marker-end="url(#ar)"/>
+        <path d="M300 222 Q300 252 200 252 Q100 252 100 226" style="fill:none;stroke:var(--mute);stroke-width:2.5" marker-end="url(#ar)"/>
+        <text x="200" y="274" class="sm mid">ein Test pro Runde, an der Test-Schnittstelle</text>
+      </g>
+      <circle cx="100" cy="190" r="30" class="ping" style="--d:1s;--k:1.5;fill:none;stroke:var(--review);stroke-width:3"/>
+      <circle cx="200" cy="190" r="30" class="ping" style="--d:1.4s;--k:1.5;fill:none;stroke:var(--ink);stroke-width:3"/>
+      <circle cx="300" cy="190" r="30" class="ping" style="--d:1.8s;--k:1.5;fill:none;stroke:var(--tick);stroke-width:3"/>
+      <circle cx="100" cy="190" r="30" class="ping" style="--d:2.3s;--k:1.5;fill:none;stroke:var(--review);stroke-width:3"/>
+      <circle cx="200" cy="190" r="30" class="ping" style="--d:2.7s;--k:1.5;fill:none;stroke:var(--ink);stroke-width:3"/>
+      <circle cx="300" cy="190" r="30" class="ping" style="--d:3.1s;--k:1.5;fill:none;stroke:var(--tick);stroke-width:3"/>
+      <g class="s" style="--d:3.8s"><rect x="30" y="290" width="100" height="32" rx="16" style="fill:var(--paper);stroke:var(--ink);stroke-width:1.5"/><text x="80" y="311" class="mid t15">alle Tests</text></g>
+      <g class="s" style="--d:4.2s"><rect x="140" y="290" width="124" height="32" rx="16" style="fill:var(--review-s);stroke:var(--review);stroke-width:1.5"/><text data-locked x="202" y="311" class="mid mono" style="font-size:13px">/code-review</text></g>
+      <g class="s" style="--d:4.6s"><rect x="274" y="290" width="96" height="32" rx="16" style="fill:var(--paper);stroke:var(--ink);stroke-width:1.5"/><text x="322" y="311" class="mid t15">Commit</text></g>
+      <path class="s" style="--d:5s;stroke:var(--mute);stroke-width:2.5" d="M200 338 V362" marker-end="url(#ar)"/>
+      <path class="draw" pathLength="1" style="--d:5s;stroke:var(--ink);stroke-width:3;fill:none" d="M120 382 H280"/>
+      <circle cx="160" cy="382" r="7" class="s" style="--d:5.2s;fill:var(--ink)"/>
+      <circle cx="200" cy="382" r="7" class="s" style="--d:5.4s;fill:var(--ink)"/>
+      <circle cx="240" cy="382" r="7" class="s" style="--d:5.6s;fill:var(--ink)"/>
+      <text x="200" y="414" class="sm mid s" style="--d:5.8s">Branch mit Commits → du prüfst</text>
+    </svg>
+  </figure>
+  <div class="side">
+    <p class="take"><code>/implement</code> nimmt ein Ticket, arbeitet testgetrieben, prüft sich am Ende selbst und committet. In einer Sandbox läuft das auch, während du weg bist.</p>
+    <div class="terms">
+      <div><b>Test-Stil:</b> Tests prüfen Verhalten nur über die öffentliche Schnittstelle und lesen sich wie eine Spezifikation, also eher BDD/ATDD als kleinteilige Unit-Tests. Der Rhythmus bleibt rot, dann grün, ein Test pro Runde. Refactoring kommt erst im Review.</div>
+      <div><b>AFK:</b> away from keyboard. Der Agent arbeitet, während du etwas anderes tust.</div>
+      <div><b>Sandbox:</b> abgeschotteter Ort, z. B. ein Docker-Container, aus dem nur Commits herauskommen. Werkzeug dafür: Sandcastle.</div>
+    </div>
+    <div class="quiz">
+      <p class="qq">Wo setzt der Agent beim Umsetzen seine Tests an?</p>
+      <div class="opts"><button class="opt">An internen Hilfsfunktionen</button><button class="opt" data-ok>An der öffentlichen Schnittstelle, die ihr vorher vereinbart habt</button><button class="opt">Gar nicht, das macht das Review</button></div>
+      <p class="why" hidden>Die Test-Schnittstelle hast du bei <code>/to-spec</code> bestätigt. Tests gegen Interna brechen bei jedem Umbau.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8 REVIEW -->
+<section class="lesson" id="review" data-c="var(--review)" hidden>
+  <div class="top"><p class="eyebrow"></p><h2>Aus Fehlern lernen</h2></div>
+  <figure class="stage">
+    <svg viewBox="0 0 400 425" role="img" aria-label="Der Diff wird parallel gegen eure Coding-Regeln und gegen Ticket und Spec geprüft. Daraus entsteht ein Review-Bericht. Du fragst bei jedem Fund, ob dem Agenten Wissen fehlte. Je nach Art landet der Fix im Glossar, in einem ADR oder in CLAUDE.md bzw. AGENTS.md.">
+      <g class="s" style="--d:0s"><rect x="150" y="8" width="100" height="36" rx="8" style="fill:var(--ink)"/><text x="200" y="31" class="mid bold t15" style="fill:var(--bg)">Diff</text></g>
+      <path class="edge draw" pathLength="1" style="--d:.3s" d="M200 44 L120 92"/>
+      <path class="edge draw" pathLength="1" style="--d:.3s" d="M200 44 L280 92"/>
+      <g class="s" style="--d:.6s"><circle cx="110" cy="122" r="28" style="fill:var(--paper);stroke:var(--review);stroke-width:5"/><path d="M130 142 L148 160" style="stroke:var(--review);stroke-width:7;stroke-linecap:round"/><text x="110" y="186" class="lbs mid">Standards</text><text x="110" y="205" class="sm mid" style="font-size:13px">eure Coding-Regeln</text></g>
+      <g class="s" style="--d:.8s"><circle cx="290" cy="122" r="28" style="fill:var(--paper);stroke:var(--review);stroke-width:5"/><path d="M310 142 L328 160" style="stroke:var(--review);stroke-width:7;stroke-linecap:round"/><text x="290" y="186" class="lbs mid">Spec</text><text x="290" y="205" class="sm mid" style="font-size:13px">Ticket und Spec</text></g>
+      <text x="200" y="127" class="sm mid s" style="--d:1s">parallel</text>
+      <g class="s" style="--d:1.5s"><path d="M120 212 L170 234" style="stroke:var(--review);stroke-width:2.5;stroke-dasharray:5 4;fill:none"/><path d="M280 212 L230 234" style="stroke:var(--review);stroke-width:2.5;stroke-dasharray:5 4;fill:none"/></g>
+      <g class="s" style="--d:1.8s"><rect x="120" y="234" width="160" height="34" rx="8" style="fill:var(--review-s);stroke:var(--review);stroke-width:2"/><text x="200" y="256" class="mid bold t15">Review-Bericht</text></g>
+      <path class="s" style="--d:2.2s;stroke:var(--mute);stroke-width:2.5" d="M200 270 V282" marker-end="url(#ar)"/>
+      <g class="s" style="--d:2.4s"><rect x="20" y="286" width="360" height="34" rx="17" style="fill:var(--ink)"/><text x="200" y="308" class="mid bold" style="font-size:14px;fill:var(--bg)">Du: Was muss der Agent künftig wissen?</text></g>
+      <path class="draw" pathLength="1" style="--d:3s;stroke:var(--docs);stroke-width:2.5;fill:none" d="M200 322 L79 348" marker-end="url(#ar)"/>
+      <path class="draw" pathLength="1" style="--d:3.3s;stroke:var(--docs);stroke-width:2.5;fill:none" d="M200 322 V348" marker-end="url(#ar)"/>
+      <path class="draw" pathLength="1" style="--d:3.6s;stroke:var(--docs);stroke-width:2.5;fill:none" d="M200 322 L321 348" marker-end="url(#ar)"/>
+      <g class="s" style="--d:3.4s"><rect x="22" y="352" width="114" height="46" rx="6" style="fill:var(--docs-s);stroke:var(--docs);stroke-width:2"/><text x="79" y="371" class="mid bold" style="font-size:13px">Begriff</text><text data-locked x="79" y="389" class="mid mono" style="font-size:11px">GLOSSARY.md</text></g>
+      <g class="s" style="--d:3.7s"><rect x="143" y="352" width="114" height="46" rx="6" style="fill:var(--docs-s);stroke:var(--docs);stroke-width:2"/><text x="200" y="371" class="mid bold" style="font-size:13px">Entscheidung</text><text data-locked x="200" y="389" class="mid mono" style="font-size:11px">docs/adr/</text></g>
+      <g class="s" style="--d:4s"><rect x="264" y="352" width="114" height="46" rx="6" style="fill:var(--docs-s);stroke:var(--docs);stroke-width:2"/><text x="321" y="371" class="mid bold" style="font-size:13px">Arbeitsregel</text><text data-locked x="321" y="389" class="mid mono" style="font-size:11px">CLAUDE.md</text></g>
+      <text x="200" y="418" class="mid bold s t15" style="--d:4.4s;fill:var(--docs)">Projektwissen: der nächste Lauf weiß es</text>
+    </svg>
+  </figure>
+  <div class="side">
+    <p class="take">Am Ende von <code>/implement</code> läuft <code>/code-review</code>: zwei Prüfer parallel, einer gegen eure Coding-Regeln, einer gegen Ticket und Spec. Du liest den Bericht und ziehst Konsequenzen: Du reparierst den Code, und was der Agent künftig wissen muss, legst du im Projektwissen fest. Neue Fachbegriffe ins Glossar, neue Entscheidungen als ADR, neue Arbeitsregeln in <code>CLAUDE.md</code> bzw. <code>AGENTS.md</code>. Selbst oder per Auftrag an den Agenten.</p>
+    <div class="terms">
+      <div><b>Vermeidbarer Fehler:</b> einer, der nur passiert, weil dem Agenten Wissen fehlte, etwa ein Fachbegriff oder eine Arbeitsregel.</div>
+      <div><b>Coding-Regeln:</b> was euer Repo dazu dokumentiert, z. B. <code>CONTRIBUTING.md</code>, plus eine feste Liste typischer Code-Smells.</div>
+      <div><b>Diff:</b> alle Änderungen seit einem Fixpunkt, z. B. seit <code>main</code>. <code>/code-review</code> kannst du auch selbst starten, etwa für einen ganzen Branch.</div>
+    </div>
+    <div class="quiz">
+      <p class="qq">Der Agent nannte Kunden „User“, euer Fachbegriff ist „Mandant“. Wohin gehört der Fix dauerhaft?</p>
+      <div class="opts"><button class="opt">In den nächsten Prompt</button><button class="opt" data-ok>In <code>GLOSSARY.md</code></button><button class="opt">Nur in den Code</button></div>
+      <p class="why" hidden>Ein Fachbegriff ist Wissen, das jeder künftige Lauf braucht. Der Bericht schlägt nur vor, entscheiden tust du.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9 PHASENENDE -->
+<section class="lesson" id="phasenende" data-c="var(--hand)" hidden>
+  <div class="top"><p class="eyebrow"></p><h2>Zwischen zwei Schritten: Chat aufräumen</h2></div>
+  <figure class="stage">
+    <svg viewBox="0 0 400 330" role="img" aria-label="Drei Kontextfenster. Compact verdichtet zur Absicht und bleibt hier. Clear leert alles. Handoff packt die Arbeit in eine Datei, die an einen anderen Ort reist.">
+      <text data-locked x="70" y="26" class="mid mono t15">/compact</text>
+      <text data-locked x="200" y="26" class="mid mono t15" style="fill:var(--review)">/clear</text>
+      <text data-locked x="330" y="26" class="mid mono t15" style="fill:var(--hand)">/handoff</text>
+      <rect x="10" y="40" width="120" height="170" rx="12" class="panel"/>
+      <rect x="140" y="40" width="120" height="170" rx="12" class="panel"/>
+      <rect x="270" y="40" width="120" height="170" rx="12" class="panel"/>
+      <g class="out" style="--d:1s;--y:20px;--sy:.25">
+        <rect x="25" y="186" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="25" y="164" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="25" y="142" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="25" y="120" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="25" y="98" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="25" y="76" width="90" height="16" rx="4" style="fill:var(--mute-s)"/></g>
+      <g class="out" style="--d:2.2s;--y:50px">
+        <rect x="155" y="186" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="155" y="164" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="155" y="142" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="155" y="120" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="155" y="98" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="155" y="76" width="90" height="16" rx="4" style="fill:var(--mute-s)"/></g>
+      <g class="out" style="--d:3.3s;--sy:.2">
+        <rect x="285" y="186" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="285" y="164" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="285" y="142" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="285" y="120" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="285" y="98" width="90" height="16" rx="4" style="fill:var(--mute-s)"/><rect x="285" y="76" width="90" height="16" rx="4" style="fill:var(--mute-s)"/></g>
+      <g class="s" style="--d:1.4s"><rect x="25" y="180" width="90" height="24" rx="6" style="fill:var(--ink)"/><text x="70" y="197" class="mid bold" style="font-size:14px;fill:var(--bg)">Absicht</text></g>
+      <text x="70" y="234" class="sm mid s" style="--d:1.6s">weiter hier</text>
+      <text x="200" y="130" class="sm mid s" style="--d:2.6s">leer</text>
+      <text x="200" y="234" class="sm mid s" style="--d:2.6s">nichts bleibt</text>
+      <g class="s" style="--d:3s"><rect x="270" y="258" width="120" height="66" rx="10" style="fill:var(--hand-s);stroke:var(--hand);stroke-width:2;stroke-dasharray:6 4"/><text x="330" y="250" class="sm mid">anderer Ort</text></g>
+      <g class="f7"><path d="M316 122 H336 L344 130 V158 H316 Z" style="fill:var(--hand-s);stroke:var(--hand);stroke-width:2"/><path d="M323 136 H337 M323 143 H337 M323 150 H333" style="stroke:var(--hand);stroke-width:2"/></g>
+    </svg>
+  </figure>
+  <div class="side">
+    <div class="take"><p>Ist ein Schritt der Linie fertig, etwa das Grillen, ist das Kontextfenster des Chats voll mit dem Verlauf. Das ist ein Problem: Mit vollem Fenster arbeitet der Agent ungenauer, und irgendwann ist kein Platz mehr. Drei Wege weiter:</p>
+      <ul>
+        <li><code>/compact</code> verdichtet den Verlauf, du arbeitest hier weiter.</li>
+        <li><code>/clear</code> leert alles. Gut, wenn das Wichtige schon in Dateien steht.</li>
+        <li><code>/handoff</code> packt die Arbeit in eine Datei für einen anderen Ort.</li>
+      </ul></div>
+    <div class="terms">
+      <div><b>Kontextfenster:</b> alles, was der Agent gerade gleichzeitig im Blick hat. Es ist begrenzt.</div>
+      <div><b><code>/compact</code>, <code>/clear</code>:</b> eingebaute Befehle, die Namen stammen aus Claude Code. Entsprechungen je Agent:<table class="cmds"><thead><tr><th>Agent</th><th>verdichten</th><th>frisch starten</th></tr></thead><tbody><tr><th scope="row"><a href="https://code.claude.com/docs/en/commands" target="_blank" rel="noopener" data-locked>Claude Code</a></th><td><code data-locked>/compact</code></td><td><code data-locked>/clear</code></td></tr><tr><th scope="row"><a href="https://developers.openai.com/codex/cli/slash-commands" target="_blank" rel="noopener" data-locked>Codex CLI</a></th><td><code data-locked>/compact</code></td><td><code data-locked>/new</code> oder <code data-locked>/clear</code></td></tr><tr><th scope="row"><a href="https://pi.dev/docs/latest/slash-commands" target="_blank" rel="noopener" data-locked>Pi</a></th><td><code data-locked>/compact</code></td><td><code data-locked>/new</code></td></tr></tbody></table></div>
+      <div><b><code>/handoff</code>:</b> kennst du aus Station 4. Es macht Arbeit transportierbar: für einen Abzweig, ein anderes Tool, einen anderen Ordner oder einen Kollegen.</div>
+    </div>
+    <div class="quiz">
+      <p class="qq">Du willst die Arbeit morgen in Codex statt in Claude Code fortsetzen. Was nimmst du?</p>
+      <div class="opts"><button class="opt" data-locked>/compact</button><button class="opt" data-ok data-locked>/handoff</button><button class="opt" data-locked>/clear</button></div>
+      <p class="why" hidden>Codex sieht deinen Claude-Chat nicht. Nur eine Datei kommt dort an. Lies sie, bevor du sie weitergibst.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10 WEGWEISER -->
+<section class="lesson" id="wegweiser" data-c="var(--ink)" hidden>
+  <div class="top"><p class="eyebrow"></p><h2>Spickzettel: Welcher Befehl jetzt?</h2></div>
+  <div class="ways" id="ways"></div>
+  <template id="ways-data">
+    <div data-way><p data-k>Idee noch unscharf</p><ol data-route data-locked><li data-c="grill">/grill-with-docs</li></ol><p data-n>Erst klären, dann bauen. Begriffe und harte Entscheidungen landen dabei in Dateien.</p></div>
+    <div data-way><p data-k>Entschieden, passt in eine Session</p><ol data-route data-locked><li data-c="grill">/grill-with-docs</li><li data-c="agent">/implement</li></ol><p data-n>Keine Spec nötig.</p></div>
+    <div data-way><p data-k>Entschieden, braucht mehrere Sessions</p><ol data-route data-locked><li data-c="spec">/to-spec</li><li data-c="tick">/to-tickets</li><li data-c="agent">/implement je Ticket</li></ol><p data-n>Bis die Tickets stehen, im selben Chat bleiben.</p></div>
+    <div data-way><p data-k>Eine Frage klärt nur laufender Code</p><ol data-route data-locked><li data-c="hand">/handoff</li><li data-c="hand">/prototype</li><li data-c="grill">Antwort zurück</li></ol><p data-n>Deine Session läuft weiter.</p></div>
+    <div data-way><p data-k>Code ist fertig, soll geprüft werden</p><ol data-route data-locked><li data-c="review">/code-review</li><li data-c="docs">Projektwissen verbessern</li></ol><p data-n>Vermeidbare Fehler gehören ins Glossar, in ADRs oder in CLAUDE.md bzw. AGENTS.md.</p></div>
+    <div data-way><p data-k>Arbeit muss in ein anderes Tool, einen anderen Ordner oder zu jemand anderem</p><ol data-route data-locked><li data-c="hand">/handoff</li></ol><p data-n>Datei lesen, bevor du sie weitergibst.</p></div>
+    <div data-way><p data-k>Schritt fertig, ich mache am selben Ort weiter</p><ol data-route data-locked><li data-c="ink">/compact</li></ol><p data-n>Die Absicht bleibt erhalten.</p></div>
+  </template>
+  <div class="side">
+    <p class="take">Für die Praxis nach dem Kurs: Wähle, wo du gerade stehst, und du siehst, welche Befehle du der Reihe nach eintippst.</p>
+    <div class="route" id="route" aria-live="polite"></div>
+    <p class="score" id="score"></p>
+    <p class="small">Installation und Einrichtung der Skills beschreibt Matt für Claude Code und andere Agenten in seinem Repo: <a href="https://github.com/mattpocock/skills" target="_blank" rel="noopener" data-locked>github.com/mattpocock/skills</a></p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="btn ghost" id="prev">← Zurück</button>
+  <button class="btn ghost" id="replay">↻ Nochmal</button>
+  <button class="btn" id="next">Weiter →</button>
+</div>
+
+<footer data-locked>Methode und Skills stammen von Matt Pocock: <a href="https://www.aihero.dev" target="_blank" rel="noopener">aihero.dev</a>. Grundlage dieser Zusammenfassung sind sein E-Mail-Kurs <a href="https://www.aihero.dev/s/skills-newsletter" target="_blank" rel="noopener">„AI Skills“</a> (14.–20.11.2026) und die SKILL.md-Dateien aus <a href="https://github.com/mattpocock/skills" target="_blank" rel="noopener">mattpocock/skills</a> (Version 1.3.2). Eine unabhängige Zusammenfassung von TeamFlowencer, nicht von Matt herausgegeben.</footer>
+</div>
+
+<script>
+(function(){
+  const K='agenten-loop-v2';
+  const L=[...document.querySelectorAll('.lesson')];
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let st={cur:0,done:{},tries:{}};
+  try{const v=JSON.parse(localStorage.getItem(K));if(v&&typeof v==='object')st=Object.assign(st,v);}catch(e){}
+  const save=()=>{try{localStorage.setItem(K,JSON.stringify(st));}catch(e){}};
+
+  const line=document.getElementById('line');
+  const dots=L.map((s,i)=>{
+    const b=document.createElement('button');
+    b.className='dot';b.style.setProperty('--c',s.dataset.c);
+    const name=s.querySelector('h2').textContent;
+    b.setAttribute('aria-label','Station '+(i+1)+': '+name);b.title=name;
+    b.addEventListener('click',()=>show(i));
+    line.appendChild(b);return b;
+  });
+  L.forEach((s,i)=>{s.style.setProperty('--c',s.dataset.c);s.querySelector('.eyebrow').textContent='Station '+(i+1)+' von '+L.length;});
+
+  function play(sec){
+    sec.classList.remove('play');void sec.offsetWidth;sec.classList.add('play');
+    sec.querySelectorAll('animateMotion').forEach(a=>{
+      if(reduce)a.setAttribute('dur','0.001s');
+      try{a.beginElementAt(reduce?0:(parseFloat(a.dataset.d)||0));}catch(e){}
+    });
+  }
+  const last=L.length-1;
+  function paint(){
+    dots.forEach((d,i)=>{d.classList.toggle('cur',i===st.cur);d.classList.toggle('done',!!st.done[L[i].id]);d.setAttribute('aria-current',i===st.cur?'step':'false');});
+    document.getElementById('prev').disabled=st.cur===0;
+    document.getElementById('next').textContent=st.cur===last?'Von vorn ↺':'Weiter →';
+  }
+  // Bild startet erst auf Klick, damit zuerst der Satz gelesen wird
+  L.forEach(s=>{
+    const stg=s.querySelector('.stage');if(!stg)return;
+    const b=document.createElement('button');b.className='playbtn';b.textContent='▶ Abspielen';
+    b.addEventListener('click',()=>start(s));
+    stg.appendChild(b);
+  });
+  function start(s){const stg=s.querySelector('.stage');if(stg)stg.classList.remove('idle');play(s);}
+  function show(i,fromHash){
+    i=Math.max(0,Math.min(last,i));
+    L.forEach((s,j)=>s.hidden=j!==i);
+    st.cur=i;save();paint();
+    const stg=L[i].querySelector('.stage');
+    if(stg){stg.classList.add('idle');L[i].classList.remove('play');}
+    if(L[i].id==='wegweiser')score();
+    if(!fromHash&&location.hash!=='#'+L[i].id){try{history.replaceState(null,'','#'+L[i].id);}catch(e){location.hash=L[i].id;}}
+    if(!fromHash)window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});
+  }
+
+  L.forEach(s=>{
+    const q=s.querySelector('.quiz');if(!q)return;
+    const why=q.querySelector('.why');
+    if(st.done[s.id]){q.querySelector('[data-ok]').classList.add('right');why.hidden=false;}
+    q.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+      if(st.done[s.id]||b.classList.contains('wrong'))return;
+      st.tries[s.id]=(st.tries[s.id]||0)+1;
+      if(b.hasAttribute('data-ok')){b.classList.add('right');why.hidden=false;st.done[s.id]=true;}
+      else{b.classList.add('wrong');b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');}
+      save();paint();
+    }));
+  });
+
+  function score(){
+    const qs=L.filter(s=>s.querySelector('.quiz'));
+    const first=qs.filter(s=>st.done[s.id]&&st.tries[s.id]===1).length;
+    const done=qs.filter(s=>st.done[s.id]).length;
+    document.getElementById('score').textContent=done?first+' von '+qs.length+' Fragen auf Anhieb richtig':'';
+  }
+
+  const W=[...document.getElementById('ways-data').content.querySelectorAll('[data-way]')].map(el=>({
+    k:el.querySelector('[data-k]').textContent,
+    r:[...el.querySelectorAll('[data-route] li')].map(li=>[li.dataset.c,li.textContent]),
+    n:el.querySelector('[data-n]').textContent
+  }));
+  const ways=document.getElementById('ways'),route=document.getElementById('route');
+  function pick(w,b){
+    ways.querySelectorAll('.way').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+    route.textContent='';
+    const stops=document.createElement('div');stops.className='stops';
+    w.r.forEach(([c,t],j)=>{
+      if(j){const jn=document.createElement('span');jn.className='join';stops.appendChild(jn);}
+      const sp=document.createElement('span');sp.className='stop';sp.style.setProperty('--c','var(--'+c+')');sp.style.animationDelay=(j*0.15)+'s';sp.textContent=t;stops.appendChild(sp);
+    });
+    const h=document.createElement('p');h.className='hint';h.textContent=w.n;
+    route.append(stops,h);
+  }
+  W.forEach((w,i)=>{
+    const b=document.createElement('button');b.className='way';b.textContent=w.k;b.setAttribute('aria-pressed','false');
+    b.addEventListener('click',()=>pick(w,b));
+    ways.appendChild(b);
+    if(i===0)pick(w,b);
+  });
+
+  document.getElementById('prev').addEventListener('click',()=>show(st.cur-1));
+  document.getElementById('next').addEventListener('click',()=>show(st.cur===last?0:st.cur+1));
+  document.getElementById('replay').addEventListener('click',()=>start(L[st.cur]));
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight')show(st.cur+1);
+    if(e.key==='ArrowLeft')show(st.cur-1);
+  });
+  window.addEventListener('hashchange',()=>{const i=L.findIndex(s=>'#'+s.id===location.hash);if(i>=0&&i!==st.cur)show(i,true);});
+
+  const hi=L.findIndex(s=>'#'+s.id===location.hash);
+  show(hi>=0?hi:(st.cur||0),hi>=0);
+})();
+</script>
+</body>
+</html>
