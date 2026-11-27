@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light">
-<title>Der Pocock-Loop</title>
+<title>Der Agenten-Loop</title>
 <meta name="description" content="Interaktive Lernsession in 10 Stationen: Wie du mit Matt Pococks Skills und einem Coding-Agenten von der Idee über Grillen, Spec und Tickets bis zum Review arbeitest. Beispiele mit Claude Code.">
 <link rel="canonical" href="https://teamflowencer.de/lernen/der-pocock-loop/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="de_DE">
-<meta property="og:title" content="Der Pocock-Loop">
+<meta property="og:title" content="Der Agenten-Loop">
 <meta property="og:description" content="Interaktive Lernsession in 10 Stationen: Grillen, Spec, Tickets, Umsetzen, Review und Projektwissen mit Matt Pococks Skills.">
 <meta property="og:url" content="https://teamflowencer.de/lernen/der-pocock-loop/">
 <meta property="og:image" content="https://teamflowencer.de/lernen/der-pocock-loop/assets/der-pocock-loop-thumbnail.jpg">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="720">
-<meta property="og:image:alt" content="Der Pocock-Loop als U-Bahn-Linie: Idee, Grillen, Spec, Tickets, Umsetzen, Review, Projektwissen">
+<meta property="og:image:alt" content="Der Agenten-Loop als U-Bahn-Linie: Idee, Grillen, Spec, Tickets, Umsetzen, Review, Projektwissen">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -183,7 +183,7 @@ svg text{fill:var(--ink);font-family:var(--sans)}
 <div class="app">
 <header>
   <div class="brand">
-    <h1>Der Pocock-Loop</h1>
+    <h1>Der Agenten-Loop</h1>
     <span class="meta">10 Stationen · etwa 12 Minuten</span>
   </div>
   <nav class="line" id="line" aria-label="Stationen"></nav>
@@ -589,7 +589,7 @@ svg text{fill:var(--ink);font-family:var(--sans)}
 
 <script>
 (function(){
-  const K='pocock-loop-v2';
+  const K='agenten-loop-v2';
   const L=[...document.querySelectorAll('.lesson')];
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   let st={cur:0,done:{},tries:{}};
